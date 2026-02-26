@@ -1,0 +1,32 @@
+---
+title: "Tables"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+tab_dir <- normalizePath(file.path('..','tables'), winslash='/', mustWork=TRUE)
+tab_files <- sort(list.files(tab_dir, pattern='\\.xlsx$', full.names=FALSE))
+```
+
+Click **Open preview** to view the interactive HTML preview of an XLSX file (browser-friendly).
+Use **Download** to save the original `.xlsx` file.
+
+```{r}
+if (length(tab_files) == 0) {
+  cat('No XLSX files found in tables/.\n')
+} else {
+  slug <- gsub('[^A-Za-z0-9]+','_', tools::file_path_sans_ext(tab_files))
+  prev <- paste0('table_', slug, '.html')
+  down <- paste0('tables/', vapply(tab_files, utils::URLencode, character(1), reserved = FALSE))
+  df <- data.frame(
+    File = tab_files,
+    Open = sprintf('<a href="%s" target="_blank" rel="noopener">Open preview</a>', prev),
+    Download = sprintf('<a href="%s" download>Download</a>', down),
+    stringsAsFactors = FALSE
+  )
+  DT::datatable(df, escape=FALSE, rownames=FALSE,
+    options=list(pageLength=25, scrollX=TRUE, dom='Bfrtip', buttons=c('copy','csv'))
+  )
+}
+```

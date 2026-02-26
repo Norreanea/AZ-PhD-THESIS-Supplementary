@@ -1,0 +1,48 @@
+---
+title: "Scripts"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+scr_dir <- normalizePath(file.path('..','scripts'), winslash='/', mustWork=TRUE)
+scr_files <- sort(list.files(scr_dir, full.names=FALSE))
+```
+
+```{r}
+if (length(scr_files) == 0) {
+  cat('No files found in scripts/.\n')
+} else {
+  ext <- tolower(tools::file_ext(scr_files))
+  href <- paste0('scripts/', vapply(scr_files, utils::URLencode, character(1), reserved = FALSE))
+  df <- data.frame(
+    File = scr_files,
+    Type = ifelse(ext == '', '(no extension)', ext),
+    Open = sprintf('<a href="%s" target="_blank" rel="noopener">Open</a>', href),
+    Download = sprintf('<a href="%s" download>Download</a>', href),
+    stringsAsFactors = FALSE
+  )
+  DT::datatable(df, escape=FALSE, rownames=FALSE,
+    options=list(pageLength=25, scrollX=TRUE, dom='Bfrtip', buttons=c('copy','csv'))
+  )
+}
+```
+
+## Previews (R and shell scripts)
+
+```{r, results='asis'}
+preview_one <- function(fname) {
+  path <- file.path(scr_dir, fname)
+  ext <- tolower(tools::file_ext(fname))
+  if (!file.exists(path)) return(invisible(NULL))
+  if (!ext %in% c('r','sh','bash')) return(invisible(NULL))
+  lang <- if (ext == 'r') 'r' else 'bash'
+  href <- paste0('scripts/', utils::URLencode(fname, reserved = FALSE))
+  cat('### ', fname, '\n\n', sep='')
+  cat(sprintf('- <a href="%s" target="_blank" rel="noopener">Open</a>  \\n- <a href="%s" download>Download</a>\n\n', href, href))
+  cat('```', lang, '\n', sep='')
+  cat(paste(readLines(path, warn=FALSE), collapse='\n'))
+  cat('\n```\n\n')
+}
+for (f in scr_files) preview_one(f)
+```

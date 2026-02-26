@@ -1,0 +1,41 @@
+---
+title: "Table S3.xlsx"
+output: html_document
+---
+
+
+
+**Mention in thesis (for traceability):**
+
+> To relate sncRNA changes to co-occurring effects at the mRNA level, long RNA-seq data from the same regenerative time points were analyzed in parallel. Differential gene expression testing was performed using a conservative strategy intended to attribute changes specifically to Smed ELAC2 KD rather than injection-related, nonspecific RNA or background effects. Genes were required to be significantly altered in Smed ELAC2 KD relative to wild type while remaining stable between the 2 control groups, and additional abundance filtering and a minimum effect-size threshold (|log2 fold change| ≥ 0.57 were applied (Section 3.4). Under these criteria, the number of differentially expressed genes (DEGs) was low, with 19 upregulated and 27 downregulated genes at 3 dpa, increasing to 25 upregulated and 58 downregulated genes at 5 dpa (Supplementary Table S3). 
+>
+> A standard step in transcriptomic analysis is functional summarization of deregulated genes by Gene Ontology (GO) assignment, covering biological processes, molecular functions, and cellular components, followed by enrichment analysis. In S. mediterranea, GO coverage is incomplete for many loci, and therefore a combined GO annotation set was constructed to support enrichment analysis. First, GO assignments available in PlanMine were retrieved for genes with existing planarian annotations. For genes lacking PlanMine GO terms, additional GO assignments were transferred using homology-based evidence generated during annotation, including best-supported SwissProt matches and domain-based mappings derived from InterProScan and Pfam, and these sources were merged into a unified gene-to-GO table (Supplementary Table S3) used for enrichment testing (Sections 3.3 and 3.4). Using this approach, GO terms were identified for 18,522 of the 25,264 genes. 
+
+
+- <a href="tables/Table%20S3.xlsx" download>Download original XLSX</a>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+TAB_SRC <- normalizePath(file.path('..','tables', fname), winslash='/', mustWork=TRUE)
+```
+
+```{r, results='asis'}
+sheets <- tryCatch(readxl::excel_sheets(TAB_SRC), error = function(e) character())
+if (length(sheets) == 0) {
+  cat('(No readable sheets.)\n')
+} else {
+  for (sh in sheets) {
+    cat('## Sheet: ', sh, '\n\n', sep='')
+    dat <- tryCatch(readxl::read_excel(TAB_SRC, sheet = sh), error = function(e) NULL)
+    if (is.null(dat)) { cat('(Could not read this sheet.)\n\n'); next }
+    dt <- DT::datatable(
+      dat, rownames=FALSE,
+      extensions=c('Buttons','Scroller'),
+      options=list(pageLength=25, scrollX=TRUE, scrollY=500, scroller=TRUE,
+                   dom='Bfrtip', buttons=c('copy','csv','excel'), searchHighlight=TRUE)
+    )
+    print(dt)
+    cat('\n\n')
+  }
+}
+```

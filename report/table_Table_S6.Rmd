@@ -1,0 +1,40 @@
+---
+title: "Table S6.xlsx"
+output: html_document
+---
+
+Population-resolved scRNA-seq differential expression signatures and summary statistics.
+
+
+**Mention in thesis (for traceability):**
+
+> Cell population-resolved DE was computed using the atlas labels described in Section 4.4.2.1 and the full details were provided in Section 3.15. Bulk-style replicate-based modeling (for example DESeq2) was not applicable here because scRNA-seq was available as a single biological replicate per condition and time point, and cell-level testing could be biased when between-replicate variation cannot be estimated (https://doi.org/10.1038/s41467-021-25960-2). Accordingly, results were generated as within-sample, population-resolved signatures supported by effect size and by concordance across the set of time-matched control samples (Supplementary Table S6). A gene was treated as differentially expressed in response to Smed ELAC2 silencing in a given population and time point if it was significant in Smed ELAC2 KD vs WT and was also not significant in GFP mock vs WT in the same direction (Section 3.15).
+
+
+- <a href="tables/Table%20S6.xlsx" download>Download original XLSX</a>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+TAB_SRC <- normalizePath(file.path('..','tables', fname), winslash='/', mustWork=TRUE)
+```
+
+```{r, results='asis'}
+sheets <- tryCatch(readxl::excel_sheets(TAB_SRC), error = function(e) character())
+if (length(sheets) == 0) {
+  cat('(No readable sheets.)\n')
+} else {
+  for (sh in sheets) {
+    cat('## Sheet: ', sh, '\n\n', sep='')
+    dat <- tryCatch(readxl::read_excel(TAB_SRC, sheet = sh), error = function(e) NULL)
+    if (is.null(dat)) { cat('(Could not read this sheet.)\n\n'); next }
+    dt <- DT::datatable(
+      dat, rownames=FALSE,
+      extensions=c('Buttons','Scroller'),
+      options=list(pageLength=25, scrollX=TRUE, scrollY=500, scroller=TRUE,
+                   dom='Bfrtip', buttons=c('copy','csv','excel'), searchHighlight=TRUE)
+    )
+    print(dt)
+    cat('\n\n')
+  }
+}
+```

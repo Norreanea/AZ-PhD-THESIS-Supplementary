@@ -1,0 +1,39 @@
+---
+title: "Table S4.xlsx"
+output: html_document
+---
+
+
+
+**Mention in thesis (for traceability):**
+
+> Cluster annotation, i.e., assigning biological identities to clusters, is generally challenging and becomes particularly difficult in non-classical model organisms, due to the lack of dedicated reference databases. To facilitate this process, a comprehensive and manually curated marker reference had to be constructed. To this end, a planarian-specific marker reference table (Supplementary Table S4) was prepared by collecting lineage and subtype markers from published planarian scRNA-seq atlases and lineage studies, recording the original gene names and sources, and then mapping each marker to the gene identifiers used in this dissertation (the schMed_Pn annotation). For each entry, a general lineage label and a detailed population label were assigned, together with both a human-readable marker name and the corresponding SMESG gene ID used in the pre-processed Seurat object. Duplicates and naming variants were harmonized so that each marker was represented consistently across analyses, and supporting references were retained in the table to enable manual traceability. 
+
+
+- <a href="tables/Table%20S4.xlsx" download>Download original XLSX</a>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+TAB_SRC <- normalizePath(file.path('..','tables', fname), winslash='/', mustWork=TRUE)
+```
+
+```{r, results='asis'}
+sheets <- tryCatch(readxl::excel_sheets(TAB_SRC), error = function(e) character())
+if (length(sheets) == 0) {
+  cat('(No readable sheets.)\n')
+} else {
+  for (sh in sheets) {
+    cat('## Sheet: ', sh, '\n\n', sep='')
+    dat <- tryCatch(readxl::read_excel(TAB_SRC, sheet = sh), error = function(e) NULL)
+    if (is.null(dat)) { cat('(Could not read this sheet.)\n\n'); next }
+    dt <- DT::datatable(
+      dat, rownames=FALSE,
+      extensions=c('Buttons','Scroller'),
+      options=list(pageLength=25, scrollX=TRUE, scrollY=500, scroller=TRUE,
+                   dom='Bfrtip', buttons=c('copy','csv','excel'), searchHighlight=TRUE)
+    )
+    print(dt)
+    cat('\n\n')
+  }
+}
+```

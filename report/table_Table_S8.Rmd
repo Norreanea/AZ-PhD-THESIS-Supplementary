@@ -1,0 +1,40 @@
+---
+title: "Table S8.xlsx"
+output: html_document
+---
+
+sncRNA filtering summary used for low-input sncRNA-seq downstream comparisons.
+
+
+**Mention in thesis (for traceability):**
+
+> A low-input sncRNA library (GenXPro) was analyzed from the X1 and X2/Xins cells for WT, GFP mock, and Smed ELAC2 KD worms as described in Section 3.17. Reads were first assigned to broad RNA classes to evaluate overall library composition (Figure 34). Because rRFs reads dominated the libraries, they were excluded prior to differential testing. sncRNAs were retained for downstream comparisons only if they had at least 10 total reads summed across all samples (Suplementary Table S8). Given the lower information content of the fractionated libraries compared with the bulk sncRNA-seq experiment (Section 4.2.5), tRF reads were summarized at the tRNA isoacceptors level rather than at the finer resolution of parental tRNA subregions. 
+
+
+- <a href="tables/Table%20S8.xlsx" download>Download original XLSX</a>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+TAB_SRC <- normalizePath(file.path('..','tables', fname), winslash='/', mustWork=TRUE)
+```
+
+```{r, results='asis'}
+sheets <- tryCatch(readxl::excel_sheets(TAB_SRC), error = function(e) character())
+if (length(sheets) == 0) {
+  cat('(No readable sheets.)\n')
+} else {
+  for (sh in sheets) {
+    cat('## Sheet: ', sh, '\n\n', sep='')
+    dat <- tryCatch(readxl::read_excel(TAB_SRC, sheet = sh), error = function(e) NULL)
+    if (is.null(dat)) { cat('(Could not read this sheet.)\n\n'); next }
+    dt <- DT::datatable(
+      dat, rownames=FALSE,
+      extensions=c('Buttons','Scroller'),
+      options=list(pageLength=25, scrollX=TRUE, scrollY=500, scroller=TRUE,
+                   dom='Bfrtip', buttons=c('copy','csv','excel'), searchHighlight=TRUE)
+    )
+    print(dt)
+    cat('\n\n')
+  }
+}
+```

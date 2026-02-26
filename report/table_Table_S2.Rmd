@@ -1,0 +1,40 @@
+---
+title: "Table S2.xlsx"
+output: html_document
+---
+
+Bulk small RNA-seq support table used for sncRNA differential analysis and summaries.
+
+
+**Mention in thesis (for traceability):**
+
+> To identify which sncRNA species were affected by Smed ELAC2 silencing and to guide subsequent analyses, differential accumulation was next evaluated between Smed ELAC2 KD and controls. Differential accumulation was assessed for sncRNA species, defined here as unique nucleotide sequences observed in the libraries. Differential accumulation was tested as described in Section 3.5 using DESeq2 with Benjamini–Hochberg correction; significance was defined as adjusted p ≤ 0.05 with |log2 fold change| ≥ 2, and sncRNAs were required to meet minimal abundance criteria (CPM > 10 in at least two replicates). To reduce potential confounding from nonspecific RNA or injection, species showing control-specific changes (GFP mock versus WT) were excluded, leaving only Smed ELAC2 KD-dependent alterations (Suplementary Table S2). 
+
+
+- <a href="tables/Table%20S2.xlsx" download>Download original XLSX</a>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+TAB_SRC <- normalizePath(file.path('..','tables', fname), winslash='/', mustWork=TRUE)
+```
+
+```{r, results='asis'}
+sheets <- tryCatch(readxl::excel_sheets(TAB_SRC), error = function(e) character())
+if (length(sheets) == 0) {
+  cat('(No readable sheets.)\n')
+} else {
+  for (sh in sheets) {
+    cat('## Sheet: ', sh, '\n\n', sep='')
+    dat <- tryCatch(readxl::read_excel(TAB_SRC, sheet = sh), error = function(e) NULL)
+    if (is.null(dat)) { cat('(Could not read this sheet.)\n\n'); next }
+    dt <- DT::datatable(
+      dat, rownames=FALSE,
+      extensions=c('Buttons','Scroller'),
+      options=list(pageLength=25, scrollX=TRUE, scrollY=500, scroller=TRUE,
+                   dom='Bfrtip', buttons=c('copy','csv','excel'), searchHighlight=TRUE)
+    )
+    print(dt)
+    cat('\n\n')
+  }
+}
+```

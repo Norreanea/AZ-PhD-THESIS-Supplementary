@@ -1,0 +1,42 @@
+---
+title: "Table S1.xlsx"
+output: html_document
+---
+
+Dataset-level metadata for the sequencing datasets used in this thesis (NCBI accessions where available, treatments and extraction protocols, read configuration, and platform details).
+
+
+**Mention in thesis (for traceability):**
+
+> 	Dataset-level metadata, including NCBI accessions, where available, treatment and extraction protocols, read configuration, and platform details, are provided in Supplementary Table S1.
+>
+> Bulk RNA-seq could detect strong whole-worm transcriptional responses, but it reported an average signal from mixed cell types and could obscure lineage-restricted changes, particularly when the relevant populations were rare (doi:10.1038/s41368-021-00146-0). Thus, in the subsequent stage of the study, the impact of Smed ELAC2 silencing was examined at the single-cell resolution. In this analysis, datasets from WT, GFP mock, and Smed ELAC2 KD worms were used, encompassing samples collected at early stages of regeneration (0, 16, 24, and 72 hpa) (Supplementary Table S1 ). The 72 hpa time point corresponded to one of the bulk RNA-seq sampling points (3 dpa).  The generation of single-cell resolution gene expression data was intended to be subsequently integrated with information on sncRNA abundance and predicted functions, in order to gain insight into their roles in regulating cell lineages. Pre-processing included read mapping, cell and feature QC, mitochondrial content filtering, doublet control, construction of 4 per-time point separate Seurat objects, containing all 3 conditions, and initial clustering. These steps were completed by Dr Małgorzata Marszałek-Zeńczak, and all analyses reported below start from these pre-processed objects (Section 3.9).
+
+
+- <a href="tables/Table%20S1.xlsx" download>Download original XLSX</a>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+TAB_SRC <- normalizePath(file.path('..','tables', fname), winslash='/', mustWork=TRUE)
+```
+
+```{r, results='asis'}
+sheets <- tryCatch(readxl::excel_sheets(TAB_SRC), error = function(e) character())
+if (length(sheets) == 0) {
+  cat('(No readable sheets.)\n')
+} else {
+  for (sh in sheets) {
+    cat('## Sheet: ', sh, '\n\n', sep='')
+    dat <- tryCatch(readxl::read_excel(TAB_SRC, sheet = sh), error = function(e) NULL)
+    if (is.null(dat)) { cat('(Could not read this sheet.)\n\n'); next }
+    dt <- DT::datatable(
+      dat, rownames=FALSE,
+      extensions=c('Buttons','Scroller'),
+      options=list(pageLength=25, scrollX=TRUE, scrollY=500, scroller=TRUE,
+                   dom='Bfrtip', buttons=c('copy','csv','excel'), searchHighlight=TRUE)
+    )
+    print(dt)
+    cat('\n\n')
+  }
+}
+```

@@ -1,0 +1,12 @@
+---
+title: "Supplementary material – interactive report"
+output: html_document
+---
+
+This local HTML report organizes the supplementary files into three sections:
+
+- **Figures** – PDF files (open in a new tab or download).
+- **Tables** – Excel tables: **Open preview** (HTML) or **Download** original XLSX.
+- **Scripts** – analysis scripts: open/download, plus previews for `.R` and `.sh`.
+
+Open locally: `docs/index.html`.

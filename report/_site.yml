@@ -1,0 +1,19 @@
+name: "Supplementary report"
+output_dir: "../docs"
+navbar:
+  title: "Supplementary report"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Figures"
+      href: figures.html
+    - text: "Tables"
+      href: tables.html
+    - text: "Scripts"
+      href: scripts.html
+output:
+  html_document:
+    theme: flatly
+    toc: true
+    toc_float: true
+    df_print: paged

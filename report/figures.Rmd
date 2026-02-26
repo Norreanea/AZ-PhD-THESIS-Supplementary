@@ -1,0 +1,27 @@
+---
+title: "Figures"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+fig_dir <- normalizePath(file.path('..','figures'), winslash='/', mustWork=TRUE)
+fig_files <- sort(list.files(fig_dir, pattern='\\.pdf$', full.names=FALSE))
+```
+
+```{r}
+if (length(fig_files) == 0) {
+  cat('No PDF files found in figures/.\n')
+} else {
+  href <- paste0('figures/', vapply(fig_files, utils::URLencode, character(1), reserved = FALSE))
+  df <- data.frame(
+    File = fig_files,
+    Open = sprintf('<a href="%s" target="_blank" rel="noopener">Open</a>', href),
+    Download = sprintf('<a href="%s" download>Download</a>', href),
+    stringsAsFactors = FALSE
+  )
+  DT::datatable(df, escape=FALSE, rownames=FALSE,
+    options=list(pageLength=25, scrollX=TRUE, dom='Bfrtip', buttons=c('copy','csv'))
+  )
+}
+```

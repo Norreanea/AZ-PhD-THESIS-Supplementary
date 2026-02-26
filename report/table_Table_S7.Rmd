@@ -1,0 +1,40 @@
+---
+title: "Table S7.xlsx"
+output: html_document
+---
+
+Δ (delta) connectivity measures between Smed ELAC2 KD and controls per edge and time point, reported separately for cell-type and family-level groups.
+
+
+**Mention in thesis (for traceability):**
+
+> To identify Smed ELAC2 KD-specific effects, a Δ (delta) connectivity measure was used between Smed ELAC2 KD and controls per edge and time point. For each edge, Δ can be positive or negative. A positive Δ means the connection was stronger in Smed ELAC2 KD than expected from controls, while a negative Δ means it was weaker. Uncertainty was assessed by repeated resampling of cells, which provided confidence intervals for Δ (Section 3.16; Supplementary Table S7). For the family-level visualization, edges with very small absolute changes were ignored, specifically, changes with |Δ| < 0.003 were treated as negligible for the summary plot (Figure 32).
+
+
+- <a href="tables/Table%20S7.xlsx" download>Download original XLSX</a>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+TAB_SRC <- normalizePath(file.path('..','tables', fname), winslash='/', mustWork=TRUE)
+```
+
+```{r, results='asis'}
+sheets <- tryCatch(readxl::excel_sheets(TAB_SRC), error = function(e) character())
+if (length(sheets) == 0) {
+  cat('(No readable sheets.)\n')
+} else {
+  for (sh in sheets) {
+    cat('## Sheet: ', sh, '\n\n', sep='')
+    dat <- tryCatch(readxl::read_excel(TAB_SRC, sheet = sh), error = function(e) NULL)
+    if (is.null(dat)) { cat('(Could not read this sheet.)\n\n'); next }
+    dt <- DT::datatable(
+      dat, rownames=FALSE,
+      extensions=c('Buttons','Scroller'),
+      options=list(pageLength=25, scrollX=TRUE, scrollY=500, scroller=TRUE,
+                   dom='Bfrtip', buttons=c('copy','csv','excel'), searchHighlight=TRUE)
+    )
+    print(dt)
+    cat('\n\n')
+  }
+}
+```
