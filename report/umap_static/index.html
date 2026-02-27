@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<style>body{background-color:white;}</style>
+
+  <meta charset="utf-8"/>
+  <title>UMAP – interactive</title>
+  <style>
+  body { font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica,Arial,sans-serif; margin: 24px; }
+  iframe { width: 100%; height: 560px; border: 1px solid #ddd; border-radius: 6px; }
+  .grid2 { display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .small { color:#555; font-size:0.95rem; }
+  .code { font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; }
+  .controls { display:flex; gap: 10px; align-items:center; flex-wrap: wrap; margin: 8px 0 10px; }
+  .controls input { min-width: 520px; max-width: 100%; padding: 6px 8px; }
+  </style>
+</head>
+<html>
+  <body>
+    <h1>UMAP – interactive</h1>
+    <p class="small">
+      UMAP embedding: 
+      <span class="code">umap.d33.nn100.md0.3</span>
+      . 
+      Population UMAPs are fully interactive (pan/zoom/hover). Activity pages are per sRNA (72 hpa only).
+    </p>
+    <h2>Population UMAPs</h2>
+    <div class="grid2">
+      <iframe src="pop_general.html" loading="lazy"></iframe>
+      <iframe src="pop_detailed.html" loading="lazy"></iframe>
+    </div>
+    <h2>Small RNA activity (72 hpa)</h2>
+    <p class="small">Type/select an sRNA to load its 72 hpa activity UMAP (interactive; pan/zoom/hover).</p>
+    <div class="controls">
+      <label for="activity_input">sRNA:</label>
+      <input id="activity_input" list="activity_list" value="ACATCGGTGGTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC"/>
+      <a id="activity_open" href="activity_ACATCGGTGGTTCAGTGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html" target="_blank" rel="noopener">Open in new tab</a>
+    </div>
+    <datalist id="activity_list">
+      <option value="ACATCGGTGGTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_ACATCGGTGGTTCAGTGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="ACCACTGACCGAGCATATC sme-miR-190a-3p" data-file="activity_ACCACTGACCGAGCATATC_sme_miR_190a_3p.html"></option>
+      <option value="ACCACTGACCGAGCATATCC sme-miR-190a-3p" data-file="activity_ACCACTGACCGAGCATATCC_sme_miR_190a_3p.html"></option>
+      <option value="ACTCTGACTCTGATAACCCG i-tRF-Gln-CTG" data-file="activity_ACTCTGACTCTGATAACCCG_i_tRF_Gln_CTG.html"></option>
+      <option value="AGCATCGGTGGTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_AGCATCGGTGGTTCAGTGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="AGGCGCGTAGCTCAGTTGGTTAGAGCACC 5&#39;-tRF-Val-GAC" data-file="activity_AGGCGCGTAGCTCAGTTGGTTAGAGCACC_5_tRF_Val_GAC.html"></option>
+      <option value="AGGGGTATAGCTCAATTGGCAGAGCGTCGGTCTCC 5&#39;-tiRNA-Trp-CCA" data-file="activity_AGGGGTATAGCTCAATTGGCAGAGCGTCGGTCTCC_5_tiRNA_Trp_CCA.html"></option>
+      <option value="AGGTAGGCATAGTCTGTTGGTTACTTCTATGAAA sme-mir-2153_precursor" data-file="activity_AGGTAGGCATAGTCTGTTGGTTACTTCTATGAAA_sme_mir_2153_precursor.html"></option>
+      <option value="AGTGGTAGAATGCTCGCCT i-tRF-Gly-GCC" data-file="activity_AGTGGTAGAATGCTCGCCT_i_tRF_Gly_GCC.html"></option>
+      <option value="ATCCTGGTCACGGCACCA 3&#39;-tRF-His-GTC" data-file="activity_ATCCTGGTCACGGCACCA_3_tRF_His_GTC.html"></option>
+      <option value="ATCGGTGGTTCAGTGGTAGAATGCT 5&#39;-tRF-Gly-GCC" data-file="activity_ATCGGTGGTTCAGTGGTAGAATGCT_5_tRF_Gly_GCC.html"></option>
+      <option value="ATCGGTGGTTCAGTGGTAGAATGCTCGCCA 5&#39;-tiRNA-Gly-GCC" data-file="activity_ATCGGTGGTTCAGTGGTAGAATGCTCGCCA_5_tiRNA_Gly_GCC.html"></option>
+      <option value="ATCGGTGGTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_ATCGGTGGTTCAGTGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="CACATGACATGTATACTCTACAAACGCAC piRNA" data-file="activity_CACATGACATGTATACTCTACAAACGCAC_piRNA.html"></option>
+      <option value="CAGTGGTAGAATGCTCGCCT i-tRF-Gly-GCC" data-file="activity_CAGTGGTAGAATGCTCGCCT_i_tRF_Gly_GCC.html"></option>
+      <option value="CAGTGGTAGAATGCTCGCCT tRNA-GLY-GCC" data-file="activity_CAGTGGTAGAATGCTCGCCT_tRNA_GLY_GCC.html"></option>
+      <option value="CATCGGTGGTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_CATCGGTGGTTCAGTGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="CATCGGTGGTTCAGTGGTAGAATGCTCGCCT tRNA-GLY-GCC" data-file="activity_CATCGGTGGTTCAGTGGTAGAATGCTCGCCT_tRNA_GLY_GCC.html"></option>
+      <option value="CCATCGGTGGTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_CCATCGGTGGTTCAGTGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="CCCACCGCTGCCACCA 3&#39;-tRF-Leu-AAG" data-file="activity_CCCACCGCTGCCACCA_3_tRF_Leu_AAG.html"></option>
+      <option value="CCCACTTCTGACACCA 3&#39;-tRF-Leu-CAA" data-file="activity_CCCACTTCTGACACCA_3_tRF_Leu_CAA.html"></option>
+      <option value="CCGGCCGATGCACCA 3&#39;-tRF-Gly-GCC" data-file="activity_CCGGCCGATGCACCA_3_tRF_Gly_GCC.html"></option>
+      <option value="CCGGTTCGCGGCACCA 3&#39;-tRF-Leu-TAA" data-file="activity_CCGGTTCGCGGCACCA_3_tRF_Leu_TAA.html"></option>
+      <option value="CCTGCTCGTGACGCCA 3&#39;-tRF-Leu-CAG" data-file="activity_CCTGCTCGTGACGCCA_3_tRF_Leu_CAG.html"></option>
+      <option value="CGCGGGGTGGAGCAGTCTGGCAGCTCGTCG 5&#39;-tRF-Met-CAT" data-file="activity_CGCGGGGTGGAGCAGTCTGGCAGCTCGTCG_5_tRF_Met_CAT.html"></option>
+      <option value="CGGGTTCGACTCCCGGCAATCGCACCA 3&#39;-tRF-Gly-CCC" data-file="activity_CGGGTTCGACTCCCGGCAATCGCACCA_3_tRF_Gly_CCC.html"></option>
+      <option value="CTTACGGTCGTGGAAGTTCGAGTCTTCTTCTGGGCACCA 3&#39;-tRF-Leu-CAG" data-file="activity_CTTACGGTCGTGGAAGTTCGAGTCTTCTTCTGGGCACCA_3_tRF_Leu_CAG.html"></option>
+      <option value="GACACGCCAGCTTCAGGTGCTGGTGACCTTACGGTCGTGGAAGTTCGAGTCTTCTTCTGGGCACCA 3&#39;-tiRNA-Leu-CAG" data-file="activity_GACACGCCAGCTTCAGGTGCTGGTGACCTTACGGTCGTGGAAGTTCGAGTCTTCTTCTGGGCACCA_3_tiRNA_Leu_CAG.html"></option>
+      <option value="GACTCCATCGTCTAGAGGCCTAGGACATCACCCT 5&#39;-tiRNA-Glu-TTC" data-file="activity_GACTCCATCGTCTAGAGGCCTAGGACATCACCCT_5_tiRNA_Glu_TTC.html"></option>
+      <option value="GCAACGGTGGTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCAACGGTGGTTCAGTGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCACCGGTGGTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCACCGGTGGTTCAGTGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCAGCGGTAGTTCAGTCGGTTAGAATAC 5&#39;-tRF-Asp-GTC" data-file="activity_GCAGCGGTAGTTCAGTCGGTTAGAATAC_5_tRF_Asp_GTC.html"></option>
+      <option value="GCATAGGTGGTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATAGGTGGTTCAGTGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCAGTGGTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCAGTGGTTCAGTGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCCGTGGTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCCGTGGTTCAGTGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCGGTAGTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCGGTAGTTCAGTGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCGGTGGTTCAGAGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCGGTGGTTCAGAGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCGGTGGTTCAGCGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCGGTGGTTCAGCGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCGGTGGTTCAGTGATAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCGGTGGTTCAGTGATAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCGGTGGTTCAGTGGTAAAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCGGTGGTTCAGTGGTAAAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCGGTGGTTCAGTGGTAGAA 5&#39;-tRF-Gly-GCC" data-file="activity_GCATCGGTGGTTCAGTGGTAGAA_5_tRF_Gly_GCC.html"></option>
+      <option value="GCATCGGTGGTTCAGTGGTAGAACGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCGGTGGTTCAGTGGTAGAACGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCGGTGGTTCAGTGGTAGAATACTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCGGTGGTTCAGTGGTAGAATACTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCGGTGGTTCAGTGGTAGAATGATCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCGGTGGTTCAGTGGTAGAATGATCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCGGTGGTTCAGTGGTAGAATGCACGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCGGTGGTTCAGTGGTAGAATGCACGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCGGTGGTTCAGTGGTAGAATGCT 5&#39;-tRF-Gly-GCC" data-file="activity_GCATCGGTGGTTCAGTGGTAGAATGCT_5_tRF_Gly_GCC.html"></option>
+      <option value="GCATCGGTGGTTCAGTGGTAGAATGCTCGCCC 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCGGTGGTTCAGTGGTAGAATGCTCGCCC_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCGGTGGTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCGGTGGTTCAGTGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCGGTGGTTCAGTGGTAGAATGCTCGCCTT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCGGTGGTTCAGTGGTAGAATGCTCGCCTT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCGGTGGTTCAGTGGTAGAATGCTCGCTT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCGGTGGTTCAGTGGTAGAATGCTCGCTT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCGGTGGTTCAGTGGTAGAATGCTTGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCGGTGGTTCAGTGGTAGAATGCTTGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCGGTGGTTCAGTGGTAGGATGCTCGCCT tRNA-GLY-GCC" data-file="activity_GCATCGGTGGTTCAGTGGTAGGATGCTCGCCT_tRNA_GLY_GCC.html"></option>
+      <option value="GCATCGGTGTTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCGGTGTTTCAGTGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCATCNGTGGTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC" data-file="activity_GCATCNGTGGTTCAGTGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html"></option>
+      <option value="GCCCGGATAGCTCAGTCGGTAGAGCATCAGACTTT 5&#39;-tiRNA-Lys-TTT" data-file="activity_GCCCGGATAGCTCAGTCGGTAGAGCATCAGACTTT_5_tiRNA_Lys_TTT.html"></option>
+      <option value="GCGATTGTAGTGTAACGGTCAGCATGGATGCCT 5&#39;-tiRNA-Gly-TCC" data-file="activity_GCGATTGTAGTGTAACGGTCAGCATGGATGCCT_5_tiRNA_Gly_TCC.html"></option>
+      <option value="GCGATTGTGGTGTAACGGTCAGCATGGATGCCA 5&#39;-tiRNA-Gly-TCC" data-file="activity_GCGATTGTGGTGTAACGGTCAGCATGGATGCCA_5_tiRNA_Gly_TCC.html"></option>
+      <option value="GCGATTGTGGTGTAACGGTCAGCATGGATGCCT 5&#39;-tiRNA-Gly-TCC" data-file="activity_GCGATTGTGGTGTAACGGTCAGCATGGATGCCT_5_tiRNA_Gly_TCC.html"></option>
+      <option value="GCGGCTGTAGCTCAGTTGGATAGAGTACTTGGC 5&#39;-tiRNA-Arg-ACG" data-file="activity_GCGGCTGTAGCTCAGTTGGATAGAGTACTTGGC_5_tiRNA_Arg_ACG.html"></option>
+      <option value="GGAGAGATGCCGGAGTGGCCGAACGGGACGGATTCGAAATCCGTTGTACTG 5&#39;-tiRNA-Ser-CGA" data-file="activity_GGAGAGATGCCGGAGTGGCCGAACGGGACGGATTCGAAATCCGTTGTACTG_5_tiRNA_Ser_CGA.html"></option>
+      <option value="GGGCCTCTAGCTCATGTTGGTTAGAGCAGCGGACT 5&#39;-tiRNA-Met-CAT" data-file="activity_GGGCCTCTAGCTCATGTTGGTTAGAGCAGCGGACT_5_tiRNA_Met_CAT.html"></option>
+      <option value="GGTGGTTCAGTGGTAGAATGCTCGCCT i-tRF-Gly-GCC" data-file="activity_GGTGGTTCAGTGGTAGAATGCTCGCCT_i_tRF_Gly_GCC.html"></option>
+      <option value="GTTCAGTGGTAGAATGCTCGCCT tRNA-GLY-GCC" data-file="activity_GTTCAGTGGTAGAATGCTCGCCT_tRNA_GLY_GCC.html"></option>
+      <option value="TAATACTGTCAGGTAAGAATACT sme-miR-8b-3p" data-file="activity_TAATACTGTCAGGTAAGAATACT_sme_miR_8b_3p.html"></option>
+      <option value="TAGTATAGTGGTCAGTATCTCCGCCT i-tRF-Asp-GTC" data-file="activity_TAGTATAGTGGTCAGTATCTCCGCCT_i_tRF_Asp_GTC.html"></option>
+      <option value="TAGTGGTCAGTATCTCCGCCT i-tRF-Asp-GTC" data-file="activity_TAGTGGTCAGTATCTCCGCCT_i_tRF_Asp_GTC.html"></option>
+      <option value="TCACCGGGTAGACATTCATT sme-miR-36a-3p" data-file="activity_TCACCGGGTAGACATTCATT_sme_miR_36a_3p.html"></option>
+      <option value="TCACCGGGTAGACATTCATTA sme-miR-36a-3p" data-file="activity_TCACCGGGTAGACATTCATTA_sme_miR_36a_3p.html"></option>
+      <option value="TCAGTGGTAGAATGCTCGCCT i-tRF-Gly-GCC" data-file="activity_TCAGTGGTAGAATGCTCGCCT_i_tRF_Gly_GCC.html"></option>
+      <option value="TCCCTGAGATCATAATATGCCA sme-miR-125b-5p" data-file="activity_TCCCTGAGATCATAATATGCCA_sme_miR_125b_5p.html"></option>
+      <option value="TCCCTGAGATCATAATATGCCT sme-miR-125b-5p" data-file="activity_TCCCTGAGATCATAATATGCCT_sme_miR_125b_5p.html"></option>
+      <option value="TCCCTGGTGGTCTAGCGGTTAGGATTCCTGGCT 5&#39;-tiRNA-Glu-CTC" data-file="activity_TCCCTGGTGGTCTAGCGGTTAGGATTCCTGGCT_5_tiRNA_Glu_CTC.html"></option>
+      <option value="TCCTCGATAGCTCAGTTGGTAGAGCGCCGGACT 5&#39;-tiRNA-Asn-GTT" data-file="activity_TCCTCGATAGCTCAGTTGGTAGAGCGCCGGACT_5_tiRNA_Asn_GTT.html"></option>
+      <option value="TCGACTCCGTCTCTGGGCACC 3&#39;-tRF-Phe-GAA" data-file="activity_TCGACTCCGTCTCTGGGCACC_3_tRF_Phe_GAA.html"></option>
+      <option value="TCGGTGGTTCAGTGGTAGAATGCTCGCCT i-tRF-Gly-GCC" data-file="activity_TCGGTGGTTCAGTGGTAGAATGCTCGCCT_i_tRF_Gly_GCC.html"></option>
+      <option value="TCTTCGATAGTATAGTGGTCAGTATCTCCGCCT 5&#39;-tiRNA-Asp-GTC" data-file="activity_TCTTCGATAGTATAGTGGTCAGTATCTCCGCCT_5_tiRNA_Asp_GTC.html"></option>
+      <option value="TCTTTGGTTTTCTAGC sme-miR-9a-5p" data-file="activity_TCTTTGGTTTTCTAGC_sme_miR_9a_5p.html"></option>
+      <option value="TTCCCGGTCGGGGAGCC 3&#39;-tRF-Glu-CTC" data-file="activity_TTCCCGGTCGGGGAGCC_3_tRF_Glu_CTC.html"></option>
+      <option value="TTTGGCACTTAAGGAATCGTCA sme-miR-96b-5p" data-file="activity_TTTGGCACTTAAGGAATCGTCA_sme_miR_96b_5p.html"></option>
+      <option value="TTTGGCACTTAAGGAATCGTCAC sme-miR-96b-5p" data-file="activity_TTTGGCACTTAAGGAATCGTCAC_sme_miR_96b_5p.html"></option>
+      <option value="TTTGGCACTTAAGGAATCGTCACA sme-miR-96b-5p" data-file="activity_TTTGGCACTTAAGGAATCGTCACA_sme_miR_96b_5p.html"></option>
+      <option value="TTTGGCACTTAAGGAATTGTC sme-miR-96a-5p" data-file="activity_TTTGGCACTTAAGGAATTGTC_sme_miR_96a_5p.html"></option>
+      <option value="TTTGGCACTTAAGGAATTGTCA sme-miR-96a-5p" data-file="activity_TTTGGCACTTAAGGAATTGTCA_sme_miR_96a_5p.html"></option>
+      <option value="TTTGGCACTTAAGGAATTGTCACA sme-miR-96a-5p" data-file="activity_TTTGGCACTTAAGGAATTGTCACA_sme_miR_96a_5p.html"></option>
+    </datalist>
+    <iframe id="activity_frame" src="activity_ACATCGGTGGTTCAGTGGTAGAATGCTCGCCT_5_tiRNA_Gly_GCC.html" loading="lazy"></iframe>
+    <script>(function(){
+function fileForSid(sid){
+var opts=document.querySelectorAll('#activity_list option');
+for(var i=0;i<opts.length;i++){ if(opts[i].value===sid){ return opts[i].getAttribute('data-file'); } }
+return null;
+}
+var input=document.getElementById('activity_input');
+// Convenience: allow changing selection without manually deleting the current value
+input.addEventListener('focus', function(){ try{ this.select(); }catch(e){} });
+input.addEventListener('click', function(){ try{ this.select(); }catch(e){} });
+var frame=document.getElementById('activity_frame');
+var open=document.getElementById('activity_open');
+function update(){
+var f=fileForSid(input.value);
+if(f){ frame.src=f; open.href=f; }
+}
+input.addEventListener('change', update);
+input.addEventListener('input', update);
+})();
+</script>
+  </body>
+</html>
+</html>

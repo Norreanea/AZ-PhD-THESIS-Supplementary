@@ -1,0 +1,99 @@
+---
+title: "UMAP"
+output: html_document
+---
+
+Population UMAPs are shown side-by-side. Small RNA activity UMAPs (72 hpa) can be loaded via a searchable selector.
+
+<style>
+.umap-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.umap-grid iframe{width:100%;height:560px;border:1px solid #ddd;border-radius:6px;}
+.act-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0 10px;}
+.act-controls input{min-width:520px;max-width:100%;padding:6px 8px;}
+</style>
+
+## Population UMAPs
+
+<div class="umap-grid">
+<iframe src="umap_static/pop_general.html" loading="lazy"></iframe>
+<iframe src="umap_static/pop_detailed.html" loading="lazy"></iframe>
+</div>
+
+## Small RNA activity (72 hpa)
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+act_idx_path <- 'activity_index.tsv'
+if (file.exists(act_idx_path)) {
+  act <- utils::read.delim(act_idx_path, sep='\t', stringsAsFactors=FALSE)
+  if (nrow(act) > 0) {
+    first_sid  <- act$sid[[1]]
+    first_file <- act$file[[1]]
+    js <- paste(
+      "(function(){",
+      "  function fileForSid(sid){",
+      "    var opts=document.querySelectorAll('#activity_list option');",
+      "    for(var i=0;i<opts.length;i++){",
+      "      if(opts[i].value===sid){ return opts[i].getAttribute('data-file'); }",
+      "    }",
+      "    return null;",
+      "  }",
+      "  var input=document.getElementById('activity_input');",
+      "  var frame=document.getElementById('activity_frame');",
+      "  var open=document.getElementById('activity_open');",
+      "  if(!input.dataset.prev){ input.dataset.prev = input.value || ''; }",
+      "  function update(){",
+      "    var f=fileForSid(input.value);",
+      "    if(f){",
+      "      input.dataset.prev = input.value;",
+      "      frame.src='umap_static/'+f;",
+      "      open.href='umap_static/'+f;",
+      "    }",
+      "  }",
+      "  input.addEventListener('pointerdown', function(){",
+      "    if(!this.value) return;",
+      "    this.dataset.prev = this.value;",
+      "    this.value = '';",
+      "    this.setAttribute('placeholder', this.dataset.prev);",
+      "    setTimeout(function(){ input.dispatchEvent(new Event('input', {bubbles:true})); }, 0);",
+      "  });",
+      "  input.addEventListener('blur', function(){",
+      "    if(!this.value && this.dataset.prev){ this.value = this.dataset.prev; }",
+      "    this.removeAttribute('placeholder');",
+      "  });",
+      "  input.addEventListener('change', update);",
+      "  input.addEventListener('input', update);",
+      "})();",
+      sep='\n'
+    )
+    htmltools::tagList(
+      htmltools::tags$div(class='act-controls',
+        htmltools::tags$label('sRNA:', `for`='activity_input'),
+        htmltools::tags$input(
+          id='activity_input', type='text', list='activity_list', value=first_sid,
+          autocomplete='off', spellcheck='false'
+        ),
+        htmltools::tags$a(
+          id='activity_open', href=paste0('umap_static/', first_file),
+          target='_blank', rel='noopener', 'Open in new tab'
+        )
+      ),
+      htmltools::tags$datalist(id='activity_list',
+        lapply(seq_len(nrow(act)), function(i) {
+          htmltools::tags$option(value=act$sid[[i]], `data-file`=act$file[[i]])
+        })
+      ),
+      htmltools::tags$iframe(
+        id='activity_frame', src=paste0('umap_static/', first_file), loading='lazy',
+        style='width:100%;height:560px;border:1px solid #ddd;border-radius:6px;'
+      ),
+      htmltools::tags$script(htmltools::HTML(js))
+    )
+  } else {
+    cat('No activity pages found.')
+  }
+} else {
+  cat('Activity index not found (no activity pages generated).')
+}
+```
+
+(Full static page: [umap_static/index.html](umap_static/index.html))

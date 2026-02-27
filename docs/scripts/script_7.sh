@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 #set -x
-# ---------- User editable paths ----------
+# ---------- SM paths ----------
 BASEDIR="/mnt/d/scRNA-seq/small_RNA"
 DATADIR="${BASEDIR}/Data"
 REFDIR="${BASEDIR}/reference"
 REF_FASTA="${REFDIR}/SM_ncRNA_filtered.fa"
-BOWTIE_PREFIX="${REFDIR}/SM_ncRNA_filtered_bowtie2_index"  # change if needed
-#GTF="${REFDIR}/final_anno_only_ncRNA.gtf"                        # leave blank to autogenerate
+BOWTIE_PREFIX="${REFDIR}/SM_ncRNA_filtered_bowtie2_index"  
+#GTF="${REFDIR}/final_anno_only_ncRNA.gtf"                       
 THREADS=8
 ADAPTER="AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC"
 MINLEN=14
 # ----------------------------------------
 
-# ---------- Conda env (assumes you already created/installed tools) ----------
+# ---------- Conda env  ----------
 source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate srna_env
 
@@ -125,7 +125,7 @@ with opn_r(inp) as r, opn_w(outp) as w, open(logp,"w") as lg:
 PY
 
 
-# ---------- (Optional) FastQC raw ----------
+# ---------- FastQC raw ----------
 # fastqc -t $THREADS -o "$RAWQC" "${DATADIR}"/*.fastq.gz || true
 
 # ---------- Cutadapt pass 1: adapter + quality (as in vendor report) ----------

@@ -1,14 +1,4 @@
-# ======================================================================
-# Auto-annotation pipeline (ultra-lean, Seurat v4/5 friendly)
-# Project: Schmidtea mediterranea
-# Author: AZ — 2025-10-17  
-#
-# Fix in this build:
-#  * Subclust picked from cluster_key_v2 when present -> parents "gX" had 0 cells.
-#    Now: selection always uses cluster_key (parent labels). Writes to cluster_key_v2.
-#  * ensure_cluster_key() will create cluster_key from Idents if absent.
-#  * Small guardrails retained; rest of pipeline unchanged.
-# ======================================================================
+# Auto-annotation pipeline 
 
 suppressPackageStartupMessages({
   library(Seurat)
@@ -32,7 +22,7 @@ if (.Platform$OS.type == "windows" && exists("memory.limit")) {
 # ---------------------------
 cfg <- list(
   paths = list(
-    seurat_rdata   = "D:/scRNA-seq/AZ_final_obj/integrated_seurat_obj_annotated_new.RData",
+    seurat_rdata   = "D:/scRNA-seq/AZ_final_obj/seurat_obj_new.RData",
     matrix_rds     = NULL,
     markers_xlsx   = "G:/PhD_final/cell_markers_curated_new_new.xlsx",
     anno_rdata     = "E:/Stringtie_anno/SM_anno/final/final_final/pfam_swiss_ncbi_merged_only_genes_dedup.RData",
@@ -2878,171 +2868,6 @@ stage_annot2_and_final <- function() {
     )
   )
   invisible(TRUE)
-}
-
-
-# -------- ultra-fast population evidence (no UCell, no LOR) --------
-population_evidence_ultra <- function(
-    obj,
-    marker_df,
-    cluster_key       = "cluster_key_final",
-    expr_thresh       = 0,
-    k_markers         = 2L,
-    write_xlsx        = FALSE,
-    out_xlsx          = NULL,
-    update_consensus  = FALSE,              # <- default: DO NOT touch consensus
-    consensus_col     = "final_consensus",
-    topk              = 3L,
-    verbose           = TRUE
-){
-  stopifnot(inherits(obj, "Seurat"))
-  stopifnot(cluster_key %in% colnames(obj@meta.data))
-  DefaultAssay(obj) <- DefaultAssay(obj)
-  
-  # ---- markers -> populations ----
-  norm_chr <- function(x) gsub("^\\s+|\\s+$", "", as.character(x))
-  need <- c("Cell_population_detailed","Markers_positive_SMESG")
-  if (!all(need %in% names(marker_df)))
-    stop("marker_df must have: ", paste(need, collapse=", "))
-  marker_df <- as.data.frame(marker_df)
-  marker_df$pop  <- norm_chr(marker_df$Cell_population_detailed)
-  marker_df$gene <- norm_chr(marker_df$Markers_positive_SMESG)
-  marker_df <- unique(marker_df[marker_df$pop!="" & marker_df$gene!="", c("pop","gene")])
-  
-  # background
-  X <- Seurat::GetAssayData(obj, assay = DefaultAssay(obj), layer = "data")
-  if (!inherits(X, "dgCMatrix")) X <- methods::as(X, "dgCMatrix")
-  genes_bg <- rownames(X)
-  
-  # ---- cache: binary & cluster map ----
-  cache <- obj@misc$pe_cache
-  cache_ok <- is.list(cache) &&
-    isTRUE(all(c("bin_thresh","bin_mat_ncol","bin_mat_nrow","gene2row","cluster_key","C","cl_sizes") %in% names(cache))) &&
-    identical(cache$cluster_key, cluster_key) &&
-    isTRUE(cache$bin_thresh == expr_thresh) &&
-    isTRUE(cache$bin_mat_ncol == ncol(X)) &&
-    isTRUE(cache$bin_mat_nrow == nrow(X))
-  
-  if (!cache_ok) {
-    if (verbose) message("[pe] building cache …")
-    B <- X
-    B@x <- as.numeric(B@x > expr_thresh)
-    
-    cl_fac <- factor(obj[[cluster_key]][,1])
-    if (is.null(names(cl_fac))) names(cl_fac) <- colnames(obj)
-    cl_fac <- cl_fac[colnames(obj)]
-    
-    C <- Matrix::sparse.model.matrix(~ cl_fac - 1)
-    colnames(C) <- levels(cl_fac)
-    cl_sizes <- Matrix::colSums(C)
-    gene2row <- setNames(seq_len(nrow(B)), rownames(B))
-    
-    cache <- list(
-      bin_thresh   = expr_thresh,
-      bin_mat_ncol = ncol(B),
-      bin_mat_nrow = nrow(B),
-      B            = B,
-      gene2row     = gene2row,
-      cluster_key  = cluster_key,
-      C            = C,
-      cl_sizes     = cl_sizes
-    )
-    obj@misc$pe_cache <- cache
-  } else {
-    if (verbose) message("[pe] using cached binary matrix & cluster map")
-    B        <- cache$B
-    gene2row <- cache$gene2row
-    C        <- cache$C
-    cl_sizes <- cache$cl_sizes
-  }
-  
-  pops <- sort(unique(marker_df$pop))
-  pop2idx <- lapply(pops, function(p){
-    g <- intersect(marker_df$gene[marker_df$pop == p], genes_bg)
-    unique(gene2row[g])
-  })
-  names(pop2idx) <- pops
-  
-  nC <- ncol(C); nP <- length(pops); N <- ncol(B)
-  if (verbose) message(sprintf("[pe] populations=%d  genes=%d  clusters=%d  cells=%d",
-                               nP, length(unique(marker_df$gene)), nC, N))
-  
-  pct_any <- matrix(0, nrow = nC, ncol = nP, dimnames = list(colnames(C), pops))
-  pct_k   <- matrix(0, nrow = nC, ncol = nP, dimnames = list(colnames(C), pops))
-  
-  for (j in seq_len(nP)) {
-    idx <- pop2idx[[j]]; if (!length(idx)) next
-    cnt_cell <- Matrix::colSums(B[idx, , drop = FALSE])
-    y_any <- as.integer(cnt_cell >= 1L)
-    y_k   <- as.integer(cnt_cell >= k_markers)
-    a_any <- as.vector(Matrix::crossprod(C, y_any))
-    a_k   <- as.vector(Matrix::crossprod(C, y_k))
-    pct_any[, j] <- a_any / cl_sizes
-    pct_k[, j]   <- a_k   / cl_sizes
-  }
-  
-  # optional Excel (pct tables)
-  if (isTRUE(write_xlsx)) {
-    stopifnot(!is.null(out_xlsx))
-    wb <- if (file.exists(out_xlsx)) openxlsx::loadWorkbook(out_xlsx) else openxlsx::createWorkbook()
-    sht2 <- "pe_pct_k"
-    if (sht2 %in% names(wb)) openxlsx::removeWorksheet(wb, sht2)
-    openxlsx::addWorksheet(wb, sht2)
-    openxlsx::writeData(wb, sht2, data.frame(cluster = rownames(pct_k), pct_k, check.names = FALSE))
-    
-    sht3 <- "pe_pct_any"
-    if (sht3 %in% names(wb)) openxlsx::removeWorksheet(wb, sht3)
-    openxlsx::addWorksheet(wb, sht3)
-    openxlsx::writeData(wb, sht3, data.frame(cluster = rownames(pct_any), pct_any, check.names = FALSE))
-    
-    openxlsx::saveWorkbook(wb, out_xlsx, overwrite = TRUE)
-  }
-  
-  if (isTRUE(update_consensus)) {
-    if (!consensus_col %in% colnames(obj@meta.data)) obj[[consensus_col]] <- NA_character_
-    # NOTE: no top-table/score here; leaving consensus unchanged is recommended.
-    warning("update_consensus=TRUE requested, but no top-table/score defined in this lean build; consensus not modified.")
-  }
-  
-  list(
-    obj     = obj,
-    pct_any = pct_any,
-    pct_k   = pct_k
-  )
-}
-pe_top5_table <- function(ev, n = 5L, digits = 3, percent = FALSE) {
-  stopifnot(all(c("pct_any","pct_k") %in% names(ev)))
-  pctk   <- ev$pct_k
-  pctany <- ev$pct_any
-  clusts <- rownames(pctk); pops <- colnames(pctk)
-  
-  ord_top <- function(M, i) {
-    o <- order(M[i, ], decreasing = TRUE, na.last = NA)
-    pops[head(o, n = min(n, length(o)))]
-  }
-  fmt <- function(i, pop, kind) {
-    val <- if (kind == "k") pctk[i, pop] else pctany[i, pop]
-    sval <- if (percent && kind %in% c("k","any")) paste0(round(100 * val, digits), "%")
-    else as.character(round(val, digits))
-    paste0(pop, " (", sval, ")")
-  }
-  
-  rows <- lapply(seq_along(clusts), function(i) {
-    k_pops <- ord_top(pctk,   i)
-    a_pops <- ord_top(pctany, i)
-    c(
-      best_pct_k   = paste(vapply(k_pops, fmt, "", i = i, kind = "k"),   collapse = "; "),
-      best_pct_any = paste(vapply(a_pops, fmt, "", i = i, kind = "any"), collapse = "; ")
-    )
-  })
-  
-  data.frame(
-    cluster = clusts,
-    do.call(rbind, rows),
-    check.names = FALSE,
-    row.names = NULL,
-    stringsAsFactors = FALSE
-  )
 }
 
 

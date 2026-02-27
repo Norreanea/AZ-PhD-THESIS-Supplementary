@@ -3,14 +3,16 @@ title: "Tables"
 output: html_document
 ---
 
+Click **Open preview** to view an interactive HTML rendering of the XLSX file in the browser.
+Use **Download** to save the original `.xlsx` file.
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 tab_dir <- normalizePath(file.path('..','tables'), winslash='/', mustWork=TRUE)
 tab_files <- sort(list.files(tab_dir, pattern='\\.xlsx$', full.names=FALSE))
+mention_path <- file.path('table_mentions.tsv')
+mentions <- if (file.exists(mention_path)) utils::read.delim(mention_path, sep='\t', stringsAsFactors=FALSE) else data.frame(File=character(), Mention=character())
 ```
-
-Click **Open preview** to view the interactive HTML preview of an XLSX file (browser-friendly).
-Use **Download** to save the original `.xlsx` file.
 
 ```{r}
 if (length(tab_files) == 0) {
@@ -19,9 +21,13 @@ if (length(tab_files) == 0) {
   slug <- gsub('[^A-Za-z0-9]+','_', tools::file_path_sans_ext(tab_files))
   prev <- paste0('table_', slug, '.html')
   down <- paste0('tables/', vapply(tab_files, utils::URLencode, character(1), reserved = FALSE))
+  m <- mentions$Mention[match(tab_files, mentions$File)]
+  m[is.na(m)] <- ''
+  m_html <- ifelse(nzchar(m), sprintf('<details><summary>Show</summary>%s</details>', htmltools::htmlEscape(m)), '')
   df <- data.frame(
     File = tab_files,
-    Open = sprintf('<a href="%s" target="_blank" rel="noopener">Open preview</a>', prev),
+    Mention = m_html,
+    Open = sprintf('<a href="%s">Open preview</a>', prev),
     Download = sprintf('<a href="%s" download>Download</a>', down),
     stringsAsFactors = FALSE
   )

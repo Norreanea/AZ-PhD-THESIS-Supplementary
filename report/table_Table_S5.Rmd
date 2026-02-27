@@ -9,33 +9,39 @@ output: html_document
 
 > This approach yielded a final atlas of 74,403 cells and 36,912 detected genes, resolving 57 biologically coherent populations spanning multiple neoblast states (σ, ζ, γ, ν and lineage-biased subclasses), epidermal progenitors and mature epidermal layers (including multiciliated states), intestinal phagocytes and goblet cells, protonephridial flame and tubule lineages with precursors, ECM-producing and pole/PCG muscle states, glia, diverse neuronal classes (including cholinergic, glutamatergic, catecholaminergic, neuropeptidergic, and sensory subtypes), eye lineages, and multiple parenchymal subtypes (Supplementary Table S5; Figure 25).
 >
-> ⁺ parenchymal and abraçada cells were extremely similar and adjacent in transcriptional space. Both populations consistently showed PGRN and CTSL2 expression among their common markers, and the difference largely reflected relative detection frequency: PGRN was detected in a similar fraction of cells across both groups (means ~81–82%; Supplementary Table S5) during manual verification of final cell annotation labeling, whereas CTSL2 was detected in a smaller fraction of cells in PGRN⁺ parenchymal clusters (mean ~48%) than in abraçada clusters (mean ~82%), consistent with a CTSL2-centered definition for abraçada cells (DOI: 10.1101/2025.08.01.668211). In addition, phagocyte clusters were distinguished by near-uniform PSAP detection (mean ~87%) together with additional co-markers that were less frequent or less dominant in the PGRN⁺ parenchymal and abraçada cells, indicating that PSAP captured a shared lysosomal program but did not, by itself, define phagocytes in this dataset. This interpretation was mechanistically plausible because, in other animals, both progranulin (encoded by PGRN) and prosaposin (encoded by PSAP) are lysosome-directed proteins that physically interact and support lysosomal trafficking, and progranulin can be proteolytically processed in lysosomes by cathepsin L (DOI: 10.1083/jcb.201502029; DOI: 10.1186/s13024-017-0196-6).  
+> PGRN⁺ parenchymal and abraçada cells were extremely similar and adjacent in transcriptional space. Both populations consistently showed PGRN and CTSL2 expression among their common markers, and the difference largely reflected relative detection frequency: PGRN was detected in a similar fraction of cells across both groups (means ~81–82%; Supplementary Table S5) during manual verification of final cell annotation labeling, whereas CTSL2 was detected in a smaller fraction of cells in PGRN⁺ parenchymal clusters (mean ~48%) than in abraçada clusters (mean ~82%), consistent with a CTSL2-centered definition for abraçada cells (DOI: 10.1101/2025.08.01.668211). In addition, phagocyte clusters were distinguished by near-uniform PSAP detection (mean ~87%) together with additional co-markers that were less frequent or less dominant in the PGRN⁺ parenchymal and abraçada cells.. Thus, PSAP primarily reported a shared lysosome-rich program across these populations, but phagocytes in this dataset were best defined by PSAP in combination with the broader phagocyte marker set rather than by PSAP alone.This interpretation was mechanistically plausible because, in other animals, both progranulin (encoded by PGRN) and prosaposin (encoded by PSAP) are lysosome-directed proteins that physically interact and support lysosomal trafficking, and progranulin can be proteolytically processed in lysosomes by cathepsin L (Zhou et al. 2015; C. W. Lee et al. 2017).
 
 
 - <a href="tables/Table%20S5.xlsx" download>Download original XLSX</a>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
-TAB_SRC <- normalizePath(file.path('..','tables', fname), winslash='/', mustWork=TRUE)
+tab_dir <- normalizePath(file.path('..','tables'), winslash='/', mustWork=TRUE)
+fname <- "Table S5.xlsx"
+path_abs <- file.path(tab_dir, fname)
 ```
 
-```{r, results='asis'}
-sheets <- tryCatch(readxl::excel_sheets(TAB_SRC), error = function(e) character())
+```{r}
+sheets <- tryCatch(readxl::excel_sheets(path_abs), error = function(e) character())
 if (length(sheets) == 0) {
-  cat('(No readable sheets.)\n')
+  htmltools::tags$em('(No readable sheets.)')
 } else {
-  for (sh in sheets) {
-    cat('## Sheet: ', sh, '\n\n', sep='')
-    dat <- tryCatch(readxl::read_excel(TAB_SRC, sheet = sh), error = function(e) NULL)
-    if (is.null(dat)) { cat('(Could not read this sheet.)\n\n'); next }
-    dt <- DT::datatable(
-      dat, rownames=FALSE,
-      extensions=c('Buttons','Scroller'),
-      options=list(pageLength=25, scrollX=TRUE, scrollY=500, scroller=TRUE,
-                   dom='Bfrtip', buttons=c('copy','csv','excel'), searchHighlight=TRUE)
+  blocks <- lapply(sheets, function(sh) {
+    dat <- tryCatch(readxl::read_excel(path_abs, sheet = sh), error = function(e) NULL)
+    if (is.null(dat)) {
+      return(htmltools::tagList(
+        htmltools::tags$h2(paste0('Sheet: ', sh)),
+        htmltools::tags$em('(Could not read this sheet.)')
+      ))
+    }
+    dt <- DT::datatable(as.data.frame(dat), rownames=FALSE, extensions=c('Buttons','Scroller'),
+      options=list(pageLength=25, scrollX=TRUE, scrollY=520, scroller=TRUE, dom='Bfrtip',
+        buttons=c('copy','csv','excel'), searchHighlight=TRUE))
+    htmltools::tagList(
+      htmltools::tags$h2(paste0('Sheet: ', sh)),
+      dt
     )
-    print(dt)
-    cat('\n\n')
-  }
+  })
+  htmltools::tagList(blocks)
 }
 ```

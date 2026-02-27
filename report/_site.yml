@@ -1,10 +1,12 @@
-name: "Supplementary report"
+name: "Supplementary"
 output_dir: "../docs"
 navbar:
-  title: "Supplementary report"
+  title: "Supplementary"
   left:
     - text: "Home"
       href: index.html
+    - text: "UMAP"
+      href: umap.html
     - text: "Figures"
       href: figures.html
     - text: "Tables"
