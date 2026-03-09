@@ -1,6 +1,6 @@
 # Supplementary materials (interactive)
 
-Static HTML report for the supplementary materials of my doctoral thesis.
+Static HTML report for the supplementary materials of my doctoral thesis https://norreanea.github.io/AZ-PhD-THESIS-Supplementary/index.html.
 
 Sections:
 - UMAPs: interactive population and per-sRNA activity maps
