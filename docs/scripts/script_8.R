@@ -1,5 +1,5 @@
 ###############################################################################
-# small RNA activity / enrichment in scRNA-seq (no Wilcoxon; no UCell)
+# small RNA activity / enrichment in scRNA-seq 
 #
 # Core idea
 # 1) Build sRNA→target gene sets by seed scanning against UTR (± CDS).
@@ -8,8 +8,8 @@
 # 3) Summarize per (celltype × timepoint × genotype) and test genotype effects
 #    using a permutation test (directional, based on bulk sRNA change).
 #
-# Notes / constraints
-# - You have 1 library per (condition × timepoint), so genotype p-values are
+# Note
+# - As there is only 1 library per (condition × timepoint), so genotype p-values are
 #   exploratory (cells are not true biological replicates). Treat as prioritization.
 ###############################################################################
 
@@ -60,12 +60,12 @@ OUT_DIR <- "G:/PhD_final/tables/srna_activity_sc"
 if (!dir.exists(OUT_DIR)) dir.create(OUT_DIR, recursive = TRUE)
 
 # Seurat parsing
-ASSAY_USE <- "RNA"              # or "SCT" if you want SCT residual-like data
-SLOT_USE  <- "data"             # "data" = log-normalized; "counts" only if you know what you're doing
+ASSAY_USE <- "RNA"              # or "SCT" 
+SLOT_USE  <- "data"             # "data" = log-normalized
 MIN_CELLS_PER_GROUP <- 20       # per (celltype,timepoint,genotype)
 
 # Which genotypes to compare
-GENO_KEEP <- c("WT", "ELAC", "GFP")    # you can include "GFP" if needed
+GENO_KEEP <- c("WT", "ELAC", "GFP")   
 
 # Timepoints to analyze (NULL = all detected)
 #TIMEPOINTS_TO_USE <- c(0, 16, 24, 72)
@@ -86,7 +86,7 @@ DO_PERMUTATION  <- TRUE
 N_PERM          <- 2000
 TEST_TOP_STRATA <- 15           # per (sRNA,model): compute perm p only for top |delta| strata
 
-# If bulk_dir_tbl has expected_target_change (DOWN_in_ELAC/UP_in_ELAC) use it; else derive from bulk_log2FC_3dpa
+# If bulk_dir_tbl has expected_target_change (DOWN_in_ELAC/UP_in_ELAC) we will use it; else derive from bulk_log2FC_3dpa
 # expected_target_change = "DOWN_in_ELAC" means sRNA is UP in ELAC (targets expected DOWN) => activity expected HIGHER in ELAC.
 
 TARGET_MODELS <- c("miRNA_canonical", "piRNA_extended", "off1_7mer", "off2_7mer", "off3_7mer")
@@ -678,10 +678,10 @@ best <- best[, .SD[1], by=.(sRNA, model)]
 best$consistensy <- ifelse(((best$ELAC<best$GFP) & (best$ELAC<best$WT)) |
                              ((best$ELAC>best$GFP) & (best$ELAC>best$WT)),
                            TRUE,FALSE)
-best[best$consistensy==TRUE,]
+best <- best[best$consistensy==TRUE,]
 #fwrite(best, file.path(OUT_DIR, "srna_activity_bestHit.tsv"), sep = "\t")
 best[best$sRNA=="GCATCGGTGGTTCAGTGGTAGAATGCTCGCCT 5'-tiRNA-Gly-GCC",]
-load("G:/PhD_final/tables/srna_activity_72_only_correct_delta.RData")#activity
+#load("G:/PhD_final/tables/srna_activity_72_only_correct_delta.RData")#activity
 
 library(scCustomize)
 result_obj
@@ -776,7 +776,7 @@ plot_sncRNA_activity_umap_rescaled <- function(
     activity,
     sid,
     model,
-    focus_pops = c("Phagocyte (broad)", "PGRN⁺ parenchymal cell"),
+    focus_pops = unlist(c(unique(subset(best,sRNA==sid)[,3]))), 
     detailed_cols,
     reduction = "umap.d33.nn100.md0.3",
     pop_col = "final_population",
@@ -1143,7 +1143,7 @@ out1 <- plot_sncRNA_activity_umap_rescaled(
   activity = activity,
   sid = "GCATCGGTGGTTCAGTGGTAGAATGCTCGCCT 5'-tiRNA-Gly-GCC",
   model = "miRNA_canonical",
-  focus_pops = c("PGRN⁺ parenchymal cell", "Phagocyte (broad)"),
+  focus_pops = focus_pops,
   detailed_cols = DETAILED_COLS,
   title = "5'-tiRNA-Gly-GCC (GCATCGGTGGTTCAGTGGTAGAATGCTCGCCT)",
   activity_mode = "delta_vs_ref",
@@ -1163,7 +1163,7 @@ out2 <- plot_sncRNA_activity_umap_rescaled(
   activity = activity,
   sid = "TCTTTGGTTTTCTAGC sme-miR-9a-5p",
   model = "off1_7mer",
-  focus_pops = c("Glutamatergic neuron"),
+  focus_pops = focus_pops,
   detailed_cols = DETAILED_COLS,
   title = "miR-9a-5p (TCTTTGGTTTTCTAGC)",
   activity_mode = "delta_vs_ref",
@@ -1181,7 +1181,7 @@ out4 <- plot_sncRNA_activity_umap_rescaled(
   activity = activity,
   sid = "CACATGACATGTATACTCTACAAACGCAC piRNA",
   model = "piRNA_extended",
-  focus_pops = c("ζ-neoblast (epidermal-fated)"),
+  focus_pops = focus_pops,
   detailed_cols = DETAILED_COLS,
   title = "piRNA (CACATGACATGTATACTCTACAAACGCAC)",
   activity_mode = "delta_vs_ref",
@@ -1198,7 +1198,7 @@ out3 <- plot_sncRNA_activity_umap_rescaled(
   activity = activity,
   sid = "ACCACTGACCGAGCATATCC sme-miR-190a-3p",
   model = "off1_7mer",
-  focus_pops = c("Late epidermal progenitor"),
+  focus_pops = focus_pops,
   detailed_cols = DETAILED_COLS,
   title = "miR-190a-3p (ACCACTGACCGAGCATATCC)",
   activity_mode = "delta_vs_ref",

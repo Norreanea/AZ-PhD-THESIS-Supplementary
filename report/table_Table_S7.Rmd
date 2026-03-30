@@ -8,7 +8,7 @@ output: html_document
 
 **Mention in thesis (for traceability):**
 
-> To identify Smed ELAC2 KD-specific effects, a Δ (delta) connectivity measure was used between Smed ELAC2 KD and controls per edge and time point. For each edge, Δ can be positive or negative. A positive Δ means the connection was stronger in Smed ELAC2 KD than expected from controls, while a negative Δ means it was weaker. Uncertainty was assessed by repeated resampling of cells, which provided confidence intervals for Δ (Section 3.16; Supplementary Table S7). For the family-level visualization, edges with very small absolute changes were ignored, specifically, changes with |Δ| < 0.003 were treated as negligible for the summary plot (Figure 32).
+> To identify Smed ELAC2 KD-specific effects, a Δ (delta) connectivity measure was used between Smed ELAC2 KD and controls per edge and time point. For each edge, Δ can be positive or negative. A positive Δ means the connection was stronger in Smed ELAC2 KD than expected from controls, while a negative Δ means it was weaker. Uncertainty was assessed by repeated resampling of cells, which provided confidence intervals for Δ (Section 3.9.8; Supplementary Table S7). For the family-level visualization, edges with very small absolute changes were ignored, specifically, changes with |Δ| < 0.003 were treated as negligible for the summary plot (Figure 32).
 
 
 - <a href="tables/Table%20S7.xlsx" download>Download original XLSX</a>

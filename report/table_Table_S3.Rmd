@@ -3,6 +3,7 @@ title: "Table S3.xlsx"
 output: html_document
 ---
 
+Bulk long RNA-seq support table used for differential gene expression and downstream GO analyses.
 
 
 **Mention in thesis (for traceability):**

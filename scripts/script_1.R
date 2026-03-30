@@ -1,10 +1,10 @@
 
-#   Clean, reproducible pipeline to:
+#   sncRNA-seq analysis pipeline to:
 #   1) read Bowtie2-mapped small-RNA tables from multiple references (RNAcentral,
 #      planarian tRNA set, rRNA set, transcriptome, genome),
-#   2) assign an RNA class (miRNA, tRF, rRF, etc.) using consistent rules,
+#   2) assign an RNA class (miRNA, tRF, rRF, etc.) using custom rules,
 #   3) compute a *consensus* annotation per unique sequence (resolve multi-hits),
-#   4) build a sample-by-feature count matrix and CPM-filter it for DGE.
+#   4) build a sample-by-feature count matrix and CPM-filter it for DGE
 
 
 # ----------------------------
@@ -36,10 +36,15 @@ install_if_missing(bioc_pkgs, bioc = TRUE)
 # ----------------------------
 cfg <- list(
   # Input directories
+  # Alignment of all snRNAs to RNAcentral DB
   dir_rnacentral  = "F:/PARN_ELAC_silencing/smallRNA/calculated_data_bowtie2_end_to_end/mapped_to_RNAcentral/mapped_seq_with_strand_new/",
+  # Alignment of TRfs only
   dir_trna_map    = "E:/Illumina/PARN_ELAC2_silencing/smallRNA/smallRNAwithAdapters/miRNA/bowtie2_mapped_SM_tRNA_seq_with_strand/",
+  # Alignment of all snRNAs not mapped to RNAcentral DB to SM rRNA reference
   dir_rrna_map    = "F:/PARN_ELAC_silencing/smallRNA/calculated_data_bowtie2_end_to_end/mapped_to_rRNA_and_genome/rRNA_seq_with_strand/",
+  # Alignment of all snRNAs not mapped to RNAcentral DB to transcriptome reference
   dir_transcript  = "F:/PARN_ELAC_silencing/smallRNA/calculated_data_bowtie2_end_to_end/mapped_to_transcriptome/mapped_seq_with_strand/",
+  # Alignment of all snRNAs not mapped to RNAcentral DB or rRNA/transcriptome to genome reference
   dir_genome      = "F:/PARN_ELAC_silencing/smallRNA/calculated_data_bowtie2_end_to_end/mapped_to_genome/mapped_seq_with_strand/",
   
   # Output
@@ -74,7 +79,7 @@ read_map_tbl <- function(path) {
     showProgress = FALSE
   )
   
-  # Keep only the first 9 columns and name them consistently.
+  # Keep only the first 9 columns and name them consistently
   if (ncol(dt) < 9) {
     stop("File has < 9 columns: ", path)
   }
@@ -89,11 +94,11 @@ parse_xm <- function(xm_chr) {
   out
 }
 
-# Compute non-match operations in CIGAR using GenomicAlignments::cigarOpTable.
+# Compute non-match operations in CIGAR using 
 cigar_nonmatch_ops <- function(cigar_chr) {
   op <- GenomicAlignments::cigarOpTable(cigar_chr)
   
-  # Count matches separately (M plus "=" if present); everything else is "non-match ops".
+  # Count matches separately (M plus "=" if present); everything else is "non-match ops"
   match_cols <- intersect(colnames(op), c("M", "="))
   nonmatch_cols <- setdiff(colnames(op), match_cols)
   
@@ -103,9 +108,9 @@ cigar_nonmatch_ops <- function(cigar_chr) {
   list(nonmatch = as.integer(nonmatch), match = as.integer(match))
 }
 
-# RNA class assignment (single source of truth, used everywhere).
+# RNA class assignment 
 rna_type_from_ref <- function(ref_chr) {
-  # Priority is encoded by order of case_when clauses (top wins).
+  # Priority is encoded by order of case_when clauses
   dplyr::case_when(
     stringr::str_detect(ref_chr, stringr::regex("multiple_hits", ignore_case = TRUE)) ~ "multiple_hits",
     stringr::str_detect(ref_chr, stringr::regex("dd_Smed_v6", ignore_case = TRUE)) ~ "mRNA fragments",
@@ -131,7 +136,7 @@ rna_type_from_ref <- function(ref_chr) {
   )
 }
 
-#  sample are ELAC13S, WT25S, GFP33S, etc.
+#  sample are ELAC13S, WT25S, GFP33S, etc
 sample_to_group <- function(sample_id) {
   #  ELAC13S -> ELAC3S
   stringr::str_replace(sample_id, "^(ELAC|WT|GFP|PARN)\\d(3S|5S)$", "\\1\\2")
@@ -345,7 +350,7 @@ sample_tbls_anno <- lapply(sample_tbls, function(dt) {
 
 saveRDS(sample_tbls_anno, file.path(cfg$out_dir, "sample_tables_no_genome_annotated.rds"))
 
-# --- Add genome-only reads (heavy)
+# --- Add genome-only reads (time-consuming)
 
 basenames_g <- common_basenames(c(cfg$dir_genome, cfg$dir_rnacentral))
 basenames_g <- intersect(basenames_g, basenames)  # keep aligned set
@@ -384,13 +389,13 @@ flt <- cpm_filter(count_mat, cfg$cpm_threshold, cfg$cpm_min_samples)
 saveRDS(flt$cpm,  file.path(cfg$out_dir, "cpm_matrix.rds"))
 saveRDS(flt$keep, file.path(cfg$out_dir, "cpm_keep_mask.rds"))
 
-# Save filtered matrices (optional)
+# Save filtered matrices 
 count_mat_keep <- count_mat[flt$keep, , drop = FALSE]
 cpm_keep <- flt$cpm[flt$keep, , drop = FALSE]
 saveRDS(count_mat_keep, file.path(cfg$out_dir, "count_matrix_cpm_filtered.rds"))
 saveRDS(cpm_keep,       file.path(cfg$out_dir, "cpm_matrix_filtered.rds"))
 
-# --- G) Minimal QC plots 
+# --- G) QC plots 
 # 1) Composition per "set" (ELAC3S/GFP3S/WT3S/...)
 plot_composition <- function(sample_tables, out_png) {
   dt <- data.table::rbindlist(sample_tables, use.names = TRUE, fill = TRUE)

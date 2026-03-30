@@ -3,13 +3,14 @@ title: "Table S5.xlsx"
 output: html_document
 ---
 
+Final population labels used across the scRNA-seq atlas analyses.
 
 
 **Mention in thesis (for traceability):**
 
 > This approach yielded a final atlas of 74,403 cells and 36,912 detected genes, resolving 57 biologically coherent populations spanning multiple neoblast states (σ, ζ, γ, ν and lineage-biased subclasses), epidermal progenitors and mature epidermal layers (including multiciliated states), intestinal phagocytes and goblet cells, protonephridial flame and tubule lineages with precursors, ECM-producing and pole/PCG muscle states, glia, diverse neuronal classes (including cholinergic, glutamatergic, catecholaminergic, neuropeptidergic, and sensory subtypes), eye lineages, and multiple parenchymal subtypes (Supplementary Table S5; Figure 25).
 >
-> PGRN⁺ parenchymal and abraçada cells were extremely similar and adjacent in transcriptional space. Both populations consistently showed PGRN and CTSL2 expression among their common markers, and the difference largely reflected relative detection frequency: PGRN was detected in a similar fraction of cells across both groups (means ~81–82%; Supplementary Table S5) during manual verification of final cell annotation labeling, whereas CTSL2 was detected in a smaller fraction of cells in PGRN⁺ parenchymal clusters (mean ~48%) than in abraçada clusters (mean ~82%), consistent with a CTSL2-centered definition for abraçada cells (DOI: 10.1101/2025.08.01.668211). In addition, phagocyte clusters were distinguished by near-uniform PSAP detection (mean ~87%) together with additional co-markers that were less frequent or less dominant in the PGRN⁺ parenchymal and abraçada cells.. Thus, PSAP primarily reported a shared lysosome-rich program across these populations, but phagocytes in this dataset were best defined by PSAP in combination with the broader phagocyte marker set rather than by PSAP alone.This interpretation was mechanistically plausible because, in other animals, both progranulin (encoded by PGRN) and prosaposin (encoded by PSAP) are lysosome-directed proteins that physically interact and support lysosomal trafficking, and progranulin can be proteolytically processed in lysosomes by cathepsin L (Zhou et al. 2015; C. W. Lee et al. 2017).
+> PGRN⁺ parenchymal and abraçada cells were extremely similar and adjacent in transcriptional space. Both populations consistently showed PGRN and CTSL2 expression among their common markers, and the difference largely reflected relative detection frequency: PGRN was detected in a similar fraction of cells across both groups (means ~81–82%; Supplementary Table S5) during manual verification of final cell annotation labeling, whereas CTSL2 was detected in a smaller fraction of cells in PGRN⁺ parenchymal clusters (mean ~48%) than in abraçada clusters (mean ~82%), consistent with a CTSL2-centered definition for abraçada cells (Zhou et al. 2015; C. W. Lee et al. 2017).
 
 
 - <a href="tables/Table%20S5.xlsx" download>Download original XLSX</a>

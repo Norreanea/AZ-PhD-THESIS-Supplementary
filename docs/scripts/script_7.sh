@@ -63,16 +63,14 @@ with open_in(inp) as fh, gzip.open(outp, "wb") as out:
 PY
 
 
-
-
-#echo "UMI extraction (Biopython; 5' UMI required, 3' UMI optional)"
-#for fq in "${CLEAN}"/*.clean.fastq.gz; do
-#  base=$(basename "$fq" .clean.fastq.gz)
-#  python -u "${EXTRACT_PY}" "$fq" "${EXTRACT}/${base}.umi.fastq.gz" \
-#    2> "${LOGS}/${base}.umi_extract.stderr" || { echo "UMI extract failed for $base"; exit 1; }
-#  ls -lh "${EXTRACT}/${base}.umi.fastq.gz" | cat
-#  break
-#done
+echo "UMI extraction (Biopython; 5' UMI required, 3' UMI optional)"
+for fq in "${CLEAN}"/*.clean.fastq.gz; do
+ base=$(basename "$fq" .clean.fastq.gz)
+ python -u "${EXTRACT_PY}" "$fq" "${EXTRACT}/${base}.umi.fastq.gz" \
+   2> "${LOGS}/${base}.umi_extract.stderr" || { echo "UMI extract failed for $base"; exit 1; }
+ ls -lh "${EXTRACT}/${base}.umi.fastq.gz" | cat
+ break
+done
 
 for f in "${EXTRACT}"/*.umi.fastq.gz; do
   tmp="${f%.umi.fastq.gz}.umi.fixed.fastq.gz"
@@ -126,53 +124,53 @@ PY
 
 
 # ---------- FastQC raw ----------
-# fastqc -t $THREADS -o "$RAWQC" "${DATADIR}"/*.fastq.gz || true
+fastqc -t $THREADS -o "$RAWQC" "${DATADIR}"/*.fastq.gz || true
 
 # ---------- Cutadapt pass 1: adapter + quality (as in vendor report) ----------
-# echo "Cutadapt pass 1 (adapter+qtrim)"
-# for fq in "${DATADIR}"/*.fastq.gz; do
-  # base=$(basename "$fq" .fastq.gz)
-  # cutadapt -e 0.1 -O 3 -q 20 -m ${MINLEN} -n 8 \ #check!!!!!!!
-           # -a "${ADAPTER}" \
-           # -o "${TRIM1}/${base}.trim1.fastq.gz" "$fq" \
-           # > "${TRIM1}/${base}.trim1.log"
-# done
+echo "Cutadapt pass 1 (adapter+qtrim)"
+for fq in "${DATADIR}"/*.fastq.gz; do
+  base=$(basename "$fq" .fastq.gz)
+  cutadapt -e 0.1 -O 3 -q 20 -m ${MINLEN} -n 8 \ #check!!!!!!!
+           -a "${ADAPTER}" \
+           -o "${TRIM1}/${base}.trim1.fastq.gz" "$fq" \
+           > "${TRIM1}/${base}.trim1.log"
+done
 
-# # ---------- Cutadapt pass 2: homopolymer cleaning ----------
-# echo "Cutadapt pass 2 (homopolymer cleaning)"
-# for fq in "${TRIM1}"/*.trim1.fastq.gz; do
-  # base=$(basename "$fq" .trim1.fastq.gz)
-  # cutadapt -a 'A{10};o=10' -a 'T{10};o=10' -a 'C{10};o=10' -a 'G{10};o=10' \ #check!!!!!!!
-           # -n 3 -m ${MINLEN} \
-           # -o "${CLEAN}/${base}.clean.fastq.gz" "$fq" \
-           # > "${CLEAN}/${base}.clean.log"
-# done
+# ---------- Cutadapt pass 2: homopolymer cleaning ----------
+echo "Cutadapt pass 2 (homopolymer cleaning)"
+for fq in "${TRIM1}"/*.trim1.fastq.gz; do
+  base=$(basename "$fq" .trim1.fastq.gz)
+  cutadapt -a 'A{10};o=10' -a 'T{10};o=10' -a 'C{10};o=10' -a 'G{10};o=10' \ #check!!!!!!!
+           -n 3 -m ${MINLEN} \
+           -o "${CLEAN}/${base}.clean.fastq.gz" "$fq" \
+           > "${CLEAN}/${base}.clean.log"
+done
 
 # ---------- UMI extraction AFTER trimming (relaxed) ----------
 echo "UMI extraction (fast; 5' UMI required, 3' UMI optional)"
 # sanity: inputs present?
-# n_in=$(ls -1 "${CLEAN}"/*.clean.fastq.gz 2>/dev/null | wc -l)
-# if [ "$n_in" -eq 0 ]; then
-  # echo "ERROR: No inputs in ${CLEAN}/*.clean.fastq.gz" >&2; exit 1
-# fi
+n_in=$(ls -1 "${CLEAN}"/*.clean.fastq.gz 2>/dev/null | wc -l)
+if [ "$n_in" -eq 0 ]; then
+  echo "ERROR: No inputs in ${CLEAN}/*.clean.fastq.gz" >&2; exit 1
+fi
 
-# # parallel if available, else serial
-# if command -v parallel >/dev/null 2>&1; then
-  # ls "${CLEAN}"/*.clean.fastq.gz \
-  # | sed 's#.*/##; s/.clean.fastq.gz$//' \
-  # | parallel -j ${THREADS} '
-      # python -u "'"${EXTRACT_PY}"'" \
-        # "'"${CLEAN}"'"/{}.clean.fastq.gz \
-        # "'"${EXTRACT}"'"/{}.umi.fastq.gz \
-      # 2> "'"${LOGS}"'"/{}.umi_extract.stderr
-    # '
-# else
-  # for fq in "${CLEAN}"/*.clean.fastq.gz; do
-    # base=$(basename "$fq" .clean.fastq.gz)
-    # python -u "${EXTRACT_PY}" "$fq" "${EXTRACT}/${base}.umi.fastq.gz" \
-      # 2> "${LOGS}/${base}.umi_extract.stderr"
-  # done
-# fi
+# parallel if available, else serial
+if command -v parallel >/dev/null 2>&1; then
+  ls "${CLEAN}"/*.clean.fastq.gz \
+  | sed 's#.*/##; s/.clean.fastq.gz$//' \
+  | parallel -j ${THREADS} '
+      python -u "'"${EXTRACT_PY}"'" \
+        "'"${CLEAN}"'"/{}.clean.fastq.gz \
+        "'"${EXTRACT}"'"/{}.umi.fastq.gz \
+      2> "'"${LOGS}"'"/{}.umi_extract.stderr
+    '
+else
+  for fq in "${CLEAN}"/*.clean.fastq.gz; do
+    base=$(basename "$fq" .clean.fastq.gz)
+    python -u "${EXTRACT_PY}" "$fq" "${EXTRACT}/${base}.umi.fastq.gz" \
+      2> "${LOGS}/${base}.umi_extract.stderr"
+  done
+fi
 
 
 # ---------- Deduplicate BEFORE mapping: exact (UMI pair + insert) ----------

@@ -281,7 +281,7 @@ assay_use   <- "SCT"                    # or Seurat::DefaultAssay(result_obj)
 layer_use   <- "data"                   # "data" for log-normalized/SCT
 
 # Marker XLSX workflow
-markers_xlsx <- "G:/PhD_final/tables/cell_markers_curated_new_new_new_new.xlsx"
+markers_xlsx <- "G:/PhD_final/tables/cell_markers_curated_new_new_new_new.xlsx" #Table S4
 
 # Output paths
 out_stats_xlsx   <- "G:/PhD_final/tables/cluster_marker_metrics_by_cluster_key_final.xlsx"

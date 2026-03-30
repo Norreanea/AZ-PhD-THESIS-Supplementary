@@ -1,5 +1,5 @@
 # Purpose
-#   Evaluate integration quality on a chosen embedding (usually PCA):
+#   Evaluate integration quality on a chosen embedding (PCA):
 #     - iLISI: local mixing by batch/condition (higher = better mixing)
 #     - cLISI-derived purity: local purity by cell type (higher = better purity)
 #     - kBET: average rejection rate of local batch-mixing tests (lower = better mixing)

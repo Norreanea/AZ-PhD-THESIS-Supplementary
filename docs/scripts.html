@@ -361,8 +361,8 @@ div.tocify {
 </div>
 
 
-<div class="datatables html-widget html-fill-item" id="htmlwidget-621f2315e47bb9171c0c" style="width:100%;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-621f2315e47bb9171c0c">{"x":{"filter":"none","vertical":false,"data":[["script_1.R","script_2.py","script_3.R","script_4.R","script_5.R","script_6.ipynb","script_7.sh","script_8.R"],["r","py","r","r","r","ipynb","sh","r"],["<a href=\"scripts/script_1.R\" target=\"_blank\" rel=\"noopener\">Open<\/a>","<a href=\"scripts/script_2.py\" target=\"_blank\" rel=\"noopener\">Open<\/a>","<a href=\"scripts/script_3.R\" target=\"_blank\" rel=\"noopener\">Open<\/a>","<a href=\"scripts/script_4.R\" target=\"_blank\" rel=\"noopener\">Open<\/a>","<a href=\"scripts/script_5.R\" target=\"_blank\" rel=\"noopener\">Open<\/a>","<a href=\"scripts/script_6.ipynb\" target=\"_blank\" rel=\"noopener\">Open<\/a>","<a href=\"scripts/script_7.sh\" target=\"_blank\" rel=\"noopener\">Open<\/a>","<a href=\"scripts/script_8.R\" target=\"_blank\" rel=\"noopener\">Open<\/a>"],["<a href=\"scripts/script_1.R\" download>Download<\/a>","<a href=\"scripts/script_2.py\" download>Download<\/a>","<a href=\"scripts/script_3.R\" download>Download<\/a>","<a href=\"scripts/script_4.R\" download>Download<\/a>","<a href=\"scripts/script_5.R\" download>Download<\/a>","<a href=\"scripts/script_6.ipynb\" download>Download<\/a>","<a href=\"scripts/script_7.sh\" download>Download<\/a>","<a href=\"scripts/script_8.R\" download>Download<\/a>"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>File<\/th>\n      <th>Type<\/th>\n      <th>Open<\/th>\n      <th>Download<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":25,"scrollX":true,"dom":"Bfrtip","buttons":["copy","csv"],"columnDefs":[{"name":"File","targets":0},{"name":"Type","targets":1},{"name":"Open","targets":2},{"name":"Download","targets":3}],"order":[],"autoWidth":false,"orderClasses":false},"selection":{"mode":"multiple","selected":null,"target":"row","selectable":null}},"evals":[],"jsHooks":[]}</script>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-e34655485fe73360b09b" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-e34655485fe73360b09b">{"x":{"filter":"none","vertical":false,"data":[["script_1.R","script_2.py","script_3.R","script_4.R","script_5.R","script_6.ipynb","script_7.sh","script_8.R"],["r","py","r","r","r","ipynb","sh","r"],["<a href=\"scripts/script_1.R\" target=\"_blank\" rel=\"noopener\">Open<\/a>","<a href=\"scripts/script_2.py\" target=\"_blank\" rel=\"noopener\">Open<\/a>","<a href=\"scripts/script_3.R\" target=\"_blank\" rel=\"noopener\">Open<\/a>","<a href=\"scripts/script_4.R\" target=\"_blank\" rel=\"noopener\">Open<\/a>","<a href=\"scripts/script_5.R\" target=\"_blank\" rel=\"noopener\">Open<\/a>","<a href=\"scripts/script_6.ipynb\" target=\"_blank\" rel=\"noopener\">Open<\/a>","<a href=\"scripts/script_7.sh\" target=\"_blank\" rel=\"noopener\">Open<\/a>","<a href=\"scripts/script_8.R\" target=\"_blank\" rel=\"noopener\">Open<\/a>"],["<a href=\"scripts/script_1.R\" download>Download<\/a>","<a href=\"scripts/script_2.py\" download>Download<\/a>","<a href=\"scripts/script_3.R\" download>Download<\/a>","<a href=\"scripts/script_4.R\" download>Download<\/a>","<a href=\"scripts/script_5.R\" download>Download<\/a>","<a href=\"scripts/script_6.ipynb\" download>Download<\/a>","<a href=\"scripts/script_7.sh\" download>Download<\/a>","<a href=\"scripts/script_8.R\" download>Download<\/a>"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>File<\/th>\n      <th>Type<\/th>\n      <th>Open<\/th>\n      <th>Download<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"pageLength":25,"scrollX":true,"dom":"Bfrtip","buttons":["copy","csv"],"columnDefs":[{"name":"File","targets":0},{"name":"Type","targets":1},{"name":"Open","targets":2},{"name":"Download","targets":3}],"order":[],"autoWidth":false,"orderClasses":false},"selection":{"mode":"multiple","selected":null,"target":"row","selectable":null}},"evals":[],"jsHooks":[]}</script>
 <div id="previews-r-and-shell-scripts" class="section level2">
 <h2>Previews (R and shell scripts)</h2>
 <div id="script_1.r" class="section level3">
@@ -372,12 +372,12 @@ div.tocify {
 - <a href="scripts/script_1.R" download>Download</a></li>
 </ul>
 <pre class="r"><code>
-#   Clean, reproducible pipeline to:
+#   sncRNA-seq analysis pipeline to:
 #   1) read Bowtie2-mapped small-RNA tables from multiple references (RNAcentral,
 #      planarian tRNA set, rRNA set, transcriptome, genome),
-#   2) assign an RNA class (miRNA, tRF, rRF, etc.) using consistent rules,
+#   2) assign an RNA class (miRNA, tRF, rRF, etc.) using custom rules,
 #   3) compute a *consensus* annotation per unique sequence (resolve multi-hits),
-#   4) build a sample-by-feature count matrix and CPM-filter it for DGE.
+#   4) build a sample-by-feature count matrix and CPM-filter it for DGE
 
 
 # ----------------------------
@@ -409,10 +409,15 @@ install_if_missing(bioc_pkgs, bioc = TRUE)
 # ----------------------------
 cfg &lt;- list(
   # Input directories
+  # Alignment of all snRNAs to RNAcentral DB
   dir_rnacentral  = &quot;F:/PARN_ELAC_silencing/smallRNA/calculated_data_bowtie2_end_to_end/mapped_to_RNAcentral/mapped_seq_with_strand_new/&quot;,
+  # Alignment of TRfs only
   dir_trna_map    = &quot;E:/Illumina/PARN_ELAC2_silencing/smallRNA/smallRNAwithAdapters/miRNA/bowtie2_mapped_SM_tRNA_seq_with_strand/&quot;,
+  # Alignment of all snRNAs not mapped to RNAcentral DB to SM rRNA reference
   dir_rrna_map    = &quot;F:/PARN_ELAC_silencing/smallRNA/calculated_data_bowtie2_end_to_end/mapped_to_rRNA_and_genome/rRNA_seq_with_strand/&quot;,
+  # Alignment of all snRNAs not mapped to RNAcentral DB to transcriptome reference
   dir_transcript  = &quot;F:/PARN_ELAC_silencing/smallRNA/calculated_data_bowtie2_end_to_end/mapped_to_transcriptome/mapped_seq_with_strand/&quot;,
+  # Alignment of all snRNAs not mapped to RNAcentral DB or rRNA/transcriptome to genome reference
   dir_genome      = &quot;F:/PARN_ELAC_silencing/smallRNA/calculated_data_bowtie2_end_to_end/mapped_to_genome/mapped_seq_with_strand/&quot;,
   
   # Output
@@ -447,7 +452,7 @@ read_map_tbl &lt;- function(path) {
     showProgress = FALSE
   )
   
-  # Keep only the first 9 columns and name them consistently.
+  # Keep only the first 9 columns and name them consistently
   if (ncol(dt) &lt; 9) {
     stop(&quot;File has &lt; 9 columns: &quot;, path)
   }
@@ -462,11 +467,11 @@ parse_xm &lt;- function(xm_chr) {
   out
 }
 
-# Compute non-match operations in CIGAR using GenomicAlignments::cigarOpTable.
+# Compute non-match operations in CIGAR using 
 cigar_nonmatch_ops &lt;- function(cigar_chr) {
   op &lt;- GenomicAlignments::cigarOpTable(cigar_chr)
   
-  # Count matches separately (M plus &quot;=&quot; if present); everything else is &quot;non-match ops&quot;.
+  # Count matches separately (M plus &quot;=&quot; if present); everything else is &quot;non-match ops&quot;
   match_cols &lt;- intersect(colnames(op), c(&quot;M&quot;, &quot;=&quot;))
   nonmatch_cols &lt;- setdiff(colnames(op), match_cols)
   
@@ -476,9 +481,9 @@ cigar_nonmatch_ops &lt;- function(cigar_chr) {
   list(nonmatch = as.integer(nonmatch), match = as.integer(match))
 }
 
-# RNA class assignment (single source of truth, used everywhere).
+# RNA class assignment 
 rna_type_from_ref &lt;- function(ref_chr) {
-  # Priority is encoded by order of case_when clauses (top wins).
+  # Priority is encoded by order of case_when clauses
   dplyr::case_when(
     stringr::str_detect(ref_chr, stringr::regex(&quot;multiple_hits&quot;, ignore_case = TRUE)) ~ &quot;multiple_hits&quot;,
     stringr::str_detect(ref_chr, stringr::regex(&quot;dd_Smed_v6&quot;, ignore_case = TRUE)) ~ &quot;mRNA fragments&quot;,
@@ -504,7 +509,7 @@ rna_type_from_ref &lt;- function(ref_chr) {
   )
 }
 
-#  sample are ELAC13S, WT25S, GFP33S, etc.
+#  sample are ELAC13S, WT25S, GFP33S, etc
 sample_to_group &lt;- function(sample_id) {
   #  ELAC13S -&gt; ELAC3S
   stringr::str_replace(sample_id, &quot;^(ELAC|WT|GFP|PARN)\\d(3S|5S)$&quot;, &quot;\\1\\2&quot;)
@@ -718,7 +723,7 @@ sample_tbls_anno &lt;- lapply(sample_tbls, function(dt) {
 
 saveRDS(sample_tbls_anno, file.path(cfg$out_dir, &quot;sample_tables_no_genome_annotated.rds&quot;))
 
-# --- Add genome-only reads (heavy)
+# --- Add genome-only reads (time-consuming)
 
 basenames_g &lt;- common_basenames(c(cfg$dir_genome, cfg$dir_rnacentral))
 basenames_g &lt;- intersect(basenames_g, basenames)  # keep aligned set
@@ -757,13 +762,13 @@ flt &lt;- cpm_filter(count_mat, cfg$cpm_threshold, cfg$cpm_min_samples)
 saveRDS(flt$cpm,  file.path(cfg$out_dir, &quot;cpm_matrix.rds&quot;))
 saveRDS(flt$keep, file.path(cfg$out_dir, &quot;cpm_keep_mask.rds&quot;))
 
-# Save filtered matrices (optional)
+# Save filtered matrices 
 count_mat_keep &lt;- count_mat[flt$keep, , drop = FALSE]
 cpm_keep &lt;- flt$cpm[flt$keep, , drop = FALSE]
 saveRDS(count_mat_keep, file.path(cfg$out_dir, &quot;count_matrix_cpm_filtered.rds&quot;))
 saveRDS(cpm_keep,       file.path(cfg$out_dir, &quot;cpm_matrix_filtered.rds&quot;))
 
-# --- G) Minimal QC plots 
+# --- G) QC plots 
 # 1) Composition per &quot;set&quot; (ELAC3S/GFP3S/WT3S/...)
 plot_composition &lt;- function(sample_tables, out_png) {
   dt &lt;- data.table::rbindlist(sample_tables, use.names = TRUE, fill = TRUE)
@@ -799,7 +804,7 @@ message(&quot;Done. Outputs written to: &quot;, cfg$out_dir)</code></pre>
 - <a href="scripts/script_3.R" download>Download</a></li>
 </ul>
 <pre class="r"><code># Purpose
-#   Evaluate integration quality on a chosen embedding (usually PCA):
+#   Evaluate integration quality on a chosen embedding (PCA):
 #     - iLISI: local mixing by batch/condition (higher = better mixing)
 #     - cLISI-derived purity: local purity by cell type (higher = better purity)
 #     - kBET: average rejection rate of local batch-mixing tests (lower = better mixing)
@@ -2610,7 +2615,7 @@ write_results_xlsx &lt;- function(wb, sheet_prefix, annot_tab, degs, anno_df) {
       df$gene &lt;- rownames(df)
     df$gene &lt;- norm_chr(df$gene)
     if (adf_ok) {
-      # 1) First join — be safe as well
+      # 1) First join
       df1 &lt;- dplyr::left_join(
         df,
         adf_slim[, c(&quot;gene&quot;,&quot;all_anno&quot;), drop = FALSE],
@@ -2709,8 +2714,7 @@ ensure_cluster_key &lt;- function(obj, key = &quot;cluster_key&quot;) {
 
 
 
-# ---- CORE: robust subclustering for ONE parent  (FIXED) ---------------------
-# ---- CORE: robust subclustering for ONE parent (never throws) ----
+# ---- CORE:  subclustering for ONE parent ---------------------
 subcluster_one &lt;- function(obj_in,
                            parent_key,
                            cluster_key_name = &quot;cluster_key&quot;,
@@ -3025,7 +3029,7 @@ subcluster_one &lt;- function(obj_in,
 
 
 
-# --- STAGE: subclust driver -----------------------------------------------
+# --- subclustering -----------------------------------------------
 auto_subcluster_suspicious &lt;- function(obj_in,
                                        annot_table,
                                        cluster_key_name = &quot;cluster_key&quot;,
@@ -3148,7 +3152,7 @@ save_timings_to_xlsx &lt;- function(wb, sheet_name = &quot;timings&quot;) {
   invisible(log)
 }
 
-# --- CONFIG KNOBS defaults (keep) ---
+# --- CONFIG KNOBS defaults  ---
 cfg$subclust_res        &lt;- cfg$subclust_res        %||% c(0.2, 0.4, 0.6, 0.8, 1.0, 1.5, 2.0)
 cfg$subclust_npcs       &lt;- cfg$subclust_npcs       %||% 30L
 cfg$subclust_k          &lt;- cfg$subclust_k          %||% 30L
@@ -3709,7 +3713,7 @@ stage_subclust &lt;- function() {
   tab1 &lt;- st$tab1
   obj &lt;- ensure_cluster_key(obj, &quot;cluster_key&quot;)
   Idents(obj) &lt;- obj$cluster_key
-  # if v2 exists but has no children (no dots), drop it to avoid confusion
+  # if v2 exists but has no children (no dots), drop it
   if (&quot;cluster_key_v2&quot; %in% colnames(obj@meta.data) &amp;&amp;
       !any(grepl(&quot;\\.&quot;, obj$cluster_key_v2))) {
     obj$cluster_key_v2 &lt;- NULL
@@ -3833,7 +3837,7 @@ stage_annot2_and_final &lt;- function() {
   refs &lt;- rehydrate_refs()
   mr   &lt;- refs$marker_ref %||% refs$marker_ref_detailed %||% refs$marker_ref_general
   
-  # NEW: compute DEGs for the FINAL grouping and cache them (prefix &#39;deg_final&#39;)
+  # compute DEGs for the FINAL grouping and cache them (prefix &#39;deg_final&#39;)
   degs_final &lt;- compute_degs_robust(obj, group_col = &quot;cluster_key_final&quot;, features_whitelist = NULL)
   if (nrow(degs_final)) {
     try(deg_ckpt_save(
@@ -3850,7 +3854,7 @@ stage_annot2_and_final &lt;- function() {
     )
   }
   
-  # Re-annotate using final key; feed the DEGs we just computed
+  # Re-annotate using final key; feed the DEGs that were just computed
   ann2 &lt;- annotate_all_methods(
     obj,
     mr,
@@ -3867,8 +3871,8 @@ stage_annot2_and_final &lt;- function() {
   tab2 &lt;- ann2$table %&gt;% dplyr::arrange(cluster)
   
   # Attach parent info from round-1 so it’s visible in Excel
-  # Force data.frame/tibble types before joining (prevents class=&#39;character&#39; surprises)
-  # ---- SAFER: attach parent info without dplyr joins ----
+  # Force data.frame/tibble types before joining 
+  # attach parent info without dplyr join
   # Ensure tab2 is a data.frame with a &#39;cluster&#39; column
   tab2 &lt;- ann2$table
   if (!is.data.frame(tab2))
@@ -4379,7 +4383,7 @@ assay_use   &lt;- &quot;SCT&quot;                    # or Seurat::DefaultAssay(r
 layer_use   &lt;- &quot;data&quot;                   # &quot;data&quot; for log-normalized/SCT
 
 # Marker XLSX workflow
-markers_xlsx &lt;- &quot;G:/PhD_final/tables/cell_markers_curated_new_new_new_new.xlsx&quot;
+markers_xlsx &lt;- &quot;G:/PhD_final/tables/cell_markers_curated_new_new_new_new.xlsx&quot; #Table S4
 
 # Output paths
 out_stats_xlsx   &lt;- &quot;G:/PhD_final/tables/cluster_marker_metrics_by_cluster_key_final.xlsx&quot;
@@ -4500,16 +4504,14 @@ with open_in(inp) as fh, gzip.open(outp, &quot;wb&quot;) as out:
 PY
 
 
-
-
-#echo &quot;UMI extraction (Biopython; 5&#39; UMI required, 3&#39; UMI optional)&quot;
-#for fq in &quot;${CLEAN}&quot;/*.clean.fastq.gz; do
-#  base=$(basename &quot;$fq&quot; .clean.fastq.gz)
-#  python -u &quot;${EXTRACT_PY}&quot; &quot;$fq&quot; &quot;${EXTRACT}/${base}.umi.fastq.gz&quot; \
-#    2&gt; &quot;${LOGS}/${base}.umi_extract.stderr&quot; || { echo &quot;UMI extract failed for $base&quot;; exit 1; }
-#  ls -lh &quot;${EXTRACT}/${base}.umi.fastq.gz&quot; | cat
-#  break
-#done
+echo &quot;UMI extraction (Biopython; 5&#39; UMI required, 3&#39; UMI optional)&quot;
+for fq in &quot;${CLEAN}&quot;/*.clean.fastq.gz; do
+ base=$(basename &quot;$fq&quot; .clean.fastq.gz)
+ python -u &quot;${EXTRACT_PY}&quot; &quot;$fq&quot; &quot;${EXTRACT}/${base}.umi.fastq.gz&quot; \
+   2&gt; &quot;${LOGS}/${base}.umi_extract.stderr&quot; || { echo &quot;UMI extract failed for $base&quot;; exit 1; }
+ ls -lh &quot;${EXTRACT}/${base}.umi.fastq.gz&quot; | cat
+ break
+done
 
 for f in &quot;${EXTRACT}&quot;/*.umi.fastq.gz; do
   tmp=&quot;${f%.umi.fastq.gz}.umi.fixed.fastq.gz&quot;
@@ -4563,53 +4565,53 @@ PY
 
 
 # ---------- FastQC raw ----------
-# fastqc -t $THREADS -o &quot;$RAWQC&quot; &quot;${DATADIR}&quot;/*.fastq.gz || true
+fastqc -t $THREADS -o &quot;$RAWQC&quot; &quot;${DATADIR}&quot;/*.fastq.gz || true
 
 # ---------- Cutadapt pass 1: adapter + quality (as in vendor report) ----------
-# echo &quot;Cutadapt pass 1 (adapter+qtrim)&quot;
-# for fq in &quot;${DATADIR}&quot;/*.fastq.gz; do
-  # base=$(basename &quot;$fq&quot; .fastq.gz)
-  # cutadapt -e 0.1 -O 3 -q 20 -m ${MINLEN} -n 8 \ #check!!!!!!!
-           # -a &quot;${ADAPTER}&quot; \
-           # -o &quot;${TRIM1}/${base}.trim1.fastq.gz&quot; &quot;$fq&quot; \
-           # &gt; &quot;${TRIM1}/${base}.trim1.log&quot;
-# done
+echo &quot;Cutadapt pass 1 (adapter+qtrim)&quot;
+for fq in &quot;${DATADIR}&quot;/*.fastq.gz; do
+  base=$(basename &quot;$fq&quot; .fastq.gz)
+  cutadapt -e 0.1 -O 3 -q 20 -m ${MINLEN} -n 8 \ #check!!!!!!!
+           -a &quot;${ADAPTER}&quot; \
+           -o &quot;${TRIM1}/${base}.trim1.fastq.gz&quot; &quot;$fq&quot; \
+           &gt; &quot;${TRIM1}/${base}.trim1.log&quot;
+done
 
-# # ---------- Cutadapt pass 2: homopolymer cleaning ----------
-# echo &quot;Cutadapt pass 2 (homopolymer cleaning)&quot;
-# for fq in &quot;${TRIM1}&quot;/*.trim1.fastq.gz; do
-  # base=$(basename &quot;$fq&quot; .trim1.fastq.gz)
-  # cutadapt -a &#39;A{10};o=10&#39; -a &#39;T{10};o=10&#39; -a &#39;C{10};o=10&#39; -a &#39;G{10};o=10&#39; \ #check!!!!!!!
-           # -n 3 -m ${MINLEN} \
-           # -o &quot;${CLEAN}/${base}.clean.fastq.gz&quot; &quot;$fq&quot; \
-           # &gt; &quot;${CLEAN}/${base}.clean.log&quot;
-# done
+# ---------- Cutadapt pass 2: homopolymer cleaning ----------
+echo &quot;Cutadapt pass 2 (homopolymer cleaning)&quot;
+for fq in &quot;${TRIM1}&quot;/*.trim1.fastq.gz; do
+  base=$(basename &quot;$fq&quot; .trim1.fastq.gz)
+  cutadapt -a &#39;A{10};o=10&#39; -a &#39;T{10};o=10&#39; -a &#39;C{10};o=10&#39; -a &#39;G{10};o=10&#39; \ #check!!!!!!!
+           -n 3 -m ${MINLEN} \
+           -o &quot;${CLEAN}/${base}.clean.fastq.gz&quot; &quot;$fq&quot; \
+           &gt; &quot;${CLEAN}/${base}.clean.log&quot;
+done
 
 # ---------- UMI extraction AFTER trimming (relaxed) ----------
 echo &quot;UMI extraction (fast; 5&#39; UMI required, 3&#39; UMI optional)&quot;
 # sanity: inputs present?
-# n_in=$(ls -1 &quot;${CLEAN}&quot;/*.clean.fastq.gz 2&gt;/dev/null | wc -l)
-# if [ &quot;$n_in&quot; -eq 0 ]; then
-  # echo &quot;ERROR: No inputs in ${CLEAN}/*.clean.fastq.gz&quot; &gt;&amp;2; exit 1
-# fi
+n_in=$(ls -1 &quot;${CLEAN}&quot;/*.clean.fastq.gz 2&gt;/dev/null | wc -l)
+if [ &quot;$n_in&quot; -eq 0 ]; then
+  echo &quot;ERROR: No inputs in ${CLEAN}/*.clean.fastq.gz&quot; &gt;&amp;2; exit 1
+fi
 
-# # parallel if available, else serial
-# if command -v parallel &gt;/dev/null 2&gt;&amp;1; then
-  # ls &quot;${CLEAN}&quot;/*.clean.fastq.gz \
-  # | sed &#39;s#.*/##; s/.clean.fastq.gz$//&#39; \
-  # | parallel -j ${THREADS} &#39;
-      # python -u &quot;&#39;&quot;${EXTRACT_PY}&quot;&#39;&quot; \
-        # &quot;&#39;&quot;${CLEAN}&quot;&#39;&quot;/{}.clean.fastq.gz \
-        # &quot;&#39;&quot;${EXTRACT}&quot;&#39;&quot;/{}.umi.fastq.gz \
-      # 2&gt; &quot;&#39;&quot;${LOGS}&quot;&#39;&quot;/{}.umi_extract.stderr
-    # &#39;
-# else
-  # for fq in &quot;${CLEAN}&quot;/*.clean.fastq.gz; do
-    # base=$(basename &quot;$fq&quot; .clean.fastq.gz)
-    # python -u &quot;${EXTRACT_PY}&quot; &quot;$fq&quot; &quot;${EXTRACT}/${base}.umi.fastq.gz&quot; \
-      # 2&gt; &quot;${LOGS}/${base}.umi_extract.stderr&quot;
-  # done
-# fi
+# parallel if available, else serial
+if command -v parallel &gt;/dev/null 2&gt;&amp;1; then
+  ls &quot;${CLEAN}&quot;/*.clean.fastq.gz \
+  | sed &#39;s#.*/##; s/.clean.fastq.gz$//&#39; \
+  | parallel -j ${THREADS} &#39;
+      python -u &quot;&#39;&quot;${EXTRACT_PY}&quot;&#39;&quot; \
+        &quot;&#39;&quot;${CLEAN}&quot;&#39;&quot;/{}.clean.fastq.gz \
+        &quot;&#39;&quot;${EXTRACT}&quot;&#39;&quot;/{}.umi.fastq.gz \
+      2&gt; &quot;&#39;&quot;${LOGS}&quot;&#39;&quot;/{}.umi_extract.stderr
+    &#39;
+else
+  for fq in &quot;${CLEAN}&quot;/*.clean.fastq.gz; do
+    base=$(basename &quot;$fq&quot; .clean.fastq.gz)
+    python -u &quot;${EXTRACT_PY}&quot; &quot;$fq&quot; &quot;${EXTRACT}/${base}.umi.fastq.gz&quot; \
+      2&gt; &quot;${LOGS}/${base}.umi_extract.stderr&quot;
+  done
+fi
 
 
 # ---------- Deduplicate BEFORE mapping: exact (UMI pair + insert) ----------
@@ -4751,7 +4753,7 @@ echo &quot;  - TPM:           ${TPM}&quot;</code></pre>
 - <a href="scripts/script_8.R" download>Download</a></li>
 </ul>
 <pre class="r"><code>###############################################################################
-# small RNA activity / enrichment in scRNA-seq (no Wilcoxon; no UCell)
+# small RNA activity / enrichment in scRNA-seq 
 #
 # Core idea
 # 1) Build sRNA→target gene sets by seed scanning against UTR (± CDS).
@@ -4760,8 +4762,8 @@ echo &quot;  - TPM:           ${TPM}&quot;</code></pre>
 # 3) Summarize per (celltype × timepoint × genotype) and test genotype effects
 #    using a permutation test (directional, based on bulk sRNA change).
 #
-# Notes / constraints
-# - You have 1 library per (condition × timepoint), so genotype p-values are
+# Note
+# - As there is only 1 library per (condition × timepoint), so genotype p-values are
 #   exploratory (cells are not true biological replicates). Treat as prioritization.
 ###############################################################################
 
@@ -4812,12 +4814,12 @@ OUT_DIR &lt;- &quot;G:/PhD_final/tables/srna_activity_sc&quot;
 if (!dir.exists(OUT_DIR)) dir.create(OUT_DIR, recursive = TRUE)
 
 # Seurat parsing
-ASSAY_USE &lt;- &quot;RNA&quot;              # or &quot;SCT&quot; if you want SCT residual-like data
-SLOT_USE  &lt;- &quot;data&quot;             # &quot;data&quot; = log-normalized; &quot;counts&quot; only if you know what you&#39;re doing
+ASSAY_USE &lt;- &quot;RNA&quot;              # or &quot;SCT&quot; 
+SLOT_USE  &lt;- &quot;data&quot;             # &quot;data&quot; = log-normalized
 MIN_CELLS_PER_GROUP &lt;- 20       # per (celltype,timepoint,genotype)
 
 # Which genotypes to compare
-GENO_KEEP &lt;- c(&quot;WT&quot;, &quot;ELAC&quot;, &quot;GFP&quot;)    # you can include &quot;GFP&quot; if needed
+GENO_KEEP &lt;- c(&quot;WT&quot;, &quot;ELAC&quot;, &quot;GFP&quot;)   
 
 # Timepoints to analyze (NULL = all detected)
 #TIMEPOINTS_TO_USE &lt;- c(0, 16, 24, 72)
@@ -4838,7 +4840,7 @@ DO_PERMUTATION  &lt;- TRUE
 N_PERM          &lt;- 2000
 TEST_TOP_STRATA &lt;- 15           # per (sRNA,model): compute perm p only for top |delta| strata
 
-# If bulk_dir_tbl has expected_target_change (DOWN_in_ELAC/UP_in_ELAC) use it; else derive from bulk_log2FC_3dpa
+# If bulk_dir_tbl has expected_target_change (DOWN_in_ELAC/UP_in_ELAC) we will use it; else derive from bulk_log2FC_3dpa
 # expected_target_change = &quot;DOWN_in_ELAC&quot; means sRNA is UP in ELAC (targets expected DOWN) =&gt; activity expected HIGHER in ELAC.
 
 TARGET_MODELS &lt;- c(&quot;miRNA_canonical&quot;, &quot;piRNA_extended&quot;, &quot;off1_7mer&quot;, &quot;off2_7mer&quot;, &quot;off3_7mer&quot;)
@@ -5430,10 +5432,10 @@ best &lt;- best[, .SD[1], by=.(sRNA, model)]
 best$consistensy &lt;- ifelse(((best$ELAC&lt;best$GFP) &amp; (best$ELAC&lt;best$WT)) |
                              ((best$ELAC&gt;best$GFP) &amp; (best$ELAC&gt;best$WT)),
                            TRUE,FALSE)
-best[best$consistensy==TRUE,]
+best &lt;- best[best$consistensy==TRUE,]
 #fwrite(best, file.path(OUT_DIR, &quot;srna_activity_bestHit.tsv&quot;), sep = &quot;\t&quot;)
 best[best$sRNA==&quot;GCATCGGTGGTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC&quot;,]
-load(&quot;G:/PhD_final/tables/srna_activity_72_only_correct_delta.RData&quot;)#activity
+#load(&quot;G:/PhD_final/tables/srna_activity_72_only_correct_delta.RData&quot;)#activity
 
 library(scCustomize)
 result_obj
@@ -5528,7 +5530,7 @@ plot_sncRNA_activity_umap_rescaled &lt;- function(
     activity,
     sid,
     model,
-    focus_pops = c(&quot;Phagocyte (broad)&quot;, &quot;PGRN⁺ parenchymal cell&quot;),
+    focus_pops = unlist(c(unique(subset(best,sRNA==sid)[,3]))), 
     detailed_cols,
     reduction = &quot;umap.d33.nn100.md0.3&quot;,
     pop_col = &quot;final_population&quot;,
@@ -5895,7 +5897,7 @@ out1 &lt;- plot_sncRNA_activity_umap_rescaled(
   activity = activity,
   sid = &quot;GCATCGGTGGTTCAGTGGTAGAATGCTCGCCT 5&#39;-tiRNA-Gly-GCC&quot;,
   model = &quot;miRNA_canonical&quot;,
-  focus_pops = c(&quot;PGRN⁺ parenchymal cell&quot;, &quot;Phagocyte (broad)&quot;),
+  focus_pops = focus_pops,
   detailed_cols = DETAILED_COLS,
   title = &quot;5&#39;-tiRNA-Gly-GCC (GCATCGGTGGTTCAGTGGTAGAATGCTCGCCT)&quot;,
   activity_mode = &quot;delta_vs_ref&quot;,
@@ -5915,7 +5917,7 @@ out2 &lt;- plot_sncRNA_activity_umap_rescaled(
   activity = activity,
   sid = &quot;TCTTTGGTTTTCTAGC sme-miR-9a-5p&quot;,
   model = &quot;off1_7mer&quot;,
-  focus_pops = c(&quot;Glutamatergic neuron&quot;),
+  focus_pops = focus_pops,
   detailed_cols = DETAILED_COLS,
   title = &quot;miR-9a-5p (TCTTTGGTTTTCTAGC)&quot;,
   activity_mode = &quot;delta_vs_ref&quot;,
@@ -5933,7 +5935,7 @@ out4 &lt;- plot_sncRNA_activity_umap_rescaled(
   activity = activity,
   sid = &quot;CACATGACATGTATACTCTACAAACGCAC piRNA&quot;,
   model = &quot;piRNA_extended&quot;,
-  focus_pops = c(&quot;ζ-neoblast (epidermal-fated)&quot;),
+  focus_pops = focus_pops,
   detailed_cols = DETAILED_COLS,
   title = &quot;piRNA (CACATGACATGTATACTCTACAAACGCAC)&quot;,
   activity_mode = &quot;delta_vs_ref&quot;,
@@ -5950,7 +5952,7 @@ out3 &lt;- plot_sncRNA_activity_umap_rescaled(
   activity = activity,
   sid = &quot;ACCACTGACCGAGCATATCC sme-miR-190a-3p&quot;,
   model = &quot;off1_7mer&quot;,
-  focus_pops = c(&quot;Late epidermal progenitor&quot;),
+  focus_pops = focus_pops,
   detailed_cols = DETAILED_COLS,
   title = &quot;miR-190a-3p (ACCACTGACCGAGCATATCC)&quot;,
   activity_mode = &quot;delta_vs_ref&quot;,

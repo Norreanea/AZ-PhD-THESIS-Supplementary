@@ -3,6 +3,7 @@ title: "Table S4.xlsx"
 output: html_document
 ---
 
+Curated marker reference used for automated cell-type assignment and validation of population labels.
 
 
 **Mention in thesis (for traceability):**

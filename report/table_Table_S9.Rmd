@@ -1,0 +1,46 @@
+---
+title: "Table S9.xlsx"
+output: html_document
+---
+
+sncRNA activity inferred from scRNA-seq of miRNAs, piRNAs and tRFs that were significantly affected by Smed ELAC2 silencing in bulk RNA-seq.
+
+
+**Mention in thesis (for traceability):**
+
+> All miRNAs, piRNAs and tRFs that were significantly affected by Smed ELAC2 silencing in bulk RNA-seq (Section 4.2.3.2) were eligible for analysis (Supplementary Table S9). Among these, 5′ tiRNA-Gly-GCC (decreased accumulation upon Smed ELAC2 KD) was selected for further characterization based on the preceding analyses, whereas 3 species with increased accumulation, miR-190a-3p, miR-9a-5p and representative piRNA, were chosen to facilitate validation of the adopted analytical workflow and the obtained results. As described in Section 3.11, candidate target sets were defined for each sncRNA using sequence-based interaction models (miRNA-like canonical targeting, 7-mer offset seed models, or an extended piRNA-like pairing model). For each cell, an activity score was computed by comparing the average expression of the predicted target set to expression-matched control genes. The score was then sign-flipped so that higher values corresponded to stronger inferred target repression. In this representation, values closer to the top of the scale indicated stronger predicted repression of targets (higher inferred sncRNA activity), whereas more negative values indicated relative target de-repression (lower inferred sncRNA activity). Importantly, this activity is a continuous quantity and does not imply a binary “active/inactive” state.
+
+
+- <a href="tables/Table%20S9.xlsx" download>Download original XLSX</a>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+tab_dir <- normalizePath(file.path('..','tables'), winslash='/', mustWork=TRUE)
+fname <- "Table S9.xlsx"
+path_abs <- file.path(tab_dir, fname)
+```
+
+```{r}
+sheets <- tryCatch(readxl::excel_sheets(path_abs), error = function(e) character())
+if (length(sheets) == 0) {
+  htmltools::tags$em('(No readable sheets.)')
+} else {
+  blocks <- lapply(sheets, function(sh) {
+    dat <- tryCatch(readxl::read_excel(path_abs, sheet = sh), error = function(e) NULL)
+    if (is.null(dat)) {
+      return(htmltools::tagList(
+        htmltools::tags$h2(paste0('Sheet: ', sh)),
+        htmltools::tags$em('(Could not read this sheet.)')
+      ))
+    }
+    dt <- DT::datatable(as.data.frame(dat), rownames=FALSE, extensions=c('Buttons','Scroller'),
+      options=list(pageLength=25, scrollX=TRUE, scrollY=520, scroller=TRUE, dom='Bfrtip',
+        buttons=c('copy','csv','excel'), searchHighlight=TRUE))
+    htmltools::tagList(
+      htmltools::tags$h2(paste0('Sheet: ', sh)),
+      dt
+    )
+  })
+  htmltools::tagList(blocks)
+}
+```

@@ -1544,7 +1544,7 @@ write_results_xlsx <- function(wb, sheet_prefix, annot_tab, degs, anno_df) {
       df$gene <- rownames(df)
     df$gene <- norm_chr(df$gene)
     if (adf_ok) {
-      # 1) First join — be safe as well
+      # 1) First join
       df1 <- dplyr::left_join(
         df,
         adf_slim[, c("gene","all_anno"), drop = FALSE],
@@ -1643,8 +1643,7 @@ ensure_cluster_key <- function(obj, key = "cluster_key") {
 
 
 
-# ---- CORE: robust subclustering for ONE parent  (FIXED) ---------------------
-# ---- CORE: robust subclustering for ONE parent (never throws) ----
+# ---- CORE:  subclustering for ONE parent ---------------------
 subcluster_one <- function(obj_in,
                            parent_key,
                            cluster_key_name = "cluster_key",
@@ -1959,7 +1958,7 @@ subcluster_one <- function(obj_in,
 
 
 
-# --- STAGE: subclust driver -----------------------------------------------
+# --- subclustering -----------------------------------------------
 auto_subcluster_suspicious <- function(obj_in,
                                        annot_table,
                                        cluster_key_name = "cluster_key",
@@ -2082,7 +2081,7 @@ save_timings_to_xlsx <- function(wb, sheet_name = "timings") {
   invisible(log)
 }
 
-# --- CONFIG KNOBS defaults (keep) ---
+# --- CONFIG KNOBS defaults  ---
 cfg$subclust_res        <- cfg$subclust_res        %||% c(0.2, 0.4, 0.6, 0.8, 1.0, 1.5, 2.0)
 cfg$subclust_npcs       <- cfg$subclust_npcs       %||% 30L
 cfg$subclust_k          <- cfg$subclust_k          %||% 30L
@@ -2643,7 +2642,7 @@ stage_subclust <- function() {
   tab1 <- st$tab1
   obj <- ensure_cluster_key(obj, "cluster_key")
   Idents(obj) <- obj$cluster_key
-  # if v2 exists but has no children (no dots), drop it to avoid confusion
+  # if v2 exists but has no children (no dots), drop it
   if ("cluster_key_v2" %in% colnames(obj@meta.data) &&
       !any(grepl("\\.", obj$cluster_key_v2))) {
     obj$cluster_key_v2 <- NULL
@@ -2767,7 +2766,7 @@ stage_annot2_and_final <- function() {
   refs <- rehydrate_refs()
   mr   <- refs$marker_ref %||% refs$marker_ref_detailed %||% refs$marker_ref_general
   
-  # NEW: compute DEGs for the FINAL grouping and cache them (prefix 'deg_final')
+  # compute DEGs for the FINAL grouping and cache them (prefix 'deg_final')
   degs_final <- compute_degs_robust(obj, group_col = "cluster_key_final", features_whitelist = NULL)
   if (nrow(degs_final)) {
     try(deg_ckpt_save(
@@ -2784,7 +2783,7 @@ stage_annot2_and_final <- function() {
     )
   }
   
-  # Re-annotate using final key; feed the DEGs we just computed
+  # Re-annotate using final key; feed the DEGs that were just computed
   ann2 <- annotate_all_methods(
     obj,
     mr,
@@ -2801,8 +2800,8 @@ stage_annot2_and_final <- function() {
   tab2 <- ann2$table %>% dplyr::arrange(cluster)
   
   # Attach parent info from round-1 so it’s visible in Excel
-  # Force data.frame/tibble types before joining (prevents class='character' surprises)
-  # ---- SAFER: attach parent info without dplyr joins ----
+  # Force data.frame/tibble types before joining 
+  # attach parent info without dplyr join
   # Ensure tab2 is a data.frame with a 'cluster' column
   tab2 <- ann2$table
   if (!is.data.frame(tab2))
