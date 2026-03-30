@@ -2,10 +2,18 @@
 title: "Supplementary material – interactive report"
 output: html_document
 ---
+This website hosts the supplementary materials for the thesis in a format that can be explored in a web browser.
+Navigation links at the top open the main sections:
 
-This page contains the supplementary materials of the thesis:
-
-- **UMAP** – interactive population maps and per-sRNA activity pages (72 hpa only).
-- **Figures** – PDFs (Open/Download).
-- **Tables** – XLSX tables rendered as interactive previews; original XLSX downloadable.
-- **Scripts** – code files (Open/Download) and previews for `.R` and `.sh`.
+- **UMAP** – interactive population and per-sRNA activity maps (72 hpa only).
+    + Population UMAPs: show the overall single-cell atlas (general and detailed views) side-by-side.
+    + Small RNA activity (72 hpa): use the searchable selector to choose one small RNA (sRNA) and load its activity map.
+    + If a plot does not load, refresh the page once.
+- **Figures** – PDF figures that can be opened in the browser or downloaded.
+- **Tables** – supplementary tables provided as Excel files (.xlsx) plus interactive previews.
+    + The preview is meant for quick browsing, sorting, and searching within a sheet.
+    + The download link provides the original .xlsx file for full inspection, filtering, or reuse in Excel/R/Python.
+    + The “Mention in thesis” field indicates where each table is referenced in the main text.
+- **Scripts** – analysis scripts and helper code.
+    + .R and .sh files can be previewed directly in the browser and also downloaded.
+    + .py and .ipynb scripts are provided as files for download and local execution.
